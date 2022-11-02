@@ -73,7 +73,7 @@ def testLifter(portNumber):
         mainUI.textBrowser.append("开始测试提升机电机运转")
         network = canopen.Network()
         network.connect(bustype='slcan', channel=portNumber, bitrate=250000)
-        deltaMotorNode = network.add_node(1, './ASDA-A3_v04.eds')
+        deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
         deltaMotorNode.nmt.state = 'OPERATIONAL'
         deltaMotorNode.sdo[0x6060].write(0x01)
         deltaMotorNode.sdo[0x607A].write(100000000)
