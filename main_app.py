@@ -146,64 +146,64 @@ def searchBaud():
 def checkCurrentConfig():
     try:
         network = canopen.Network()
-        network.connect(bustype='slcan', channel=portNumber, bitrate=250000)
+        network.connect(bustype='slcan', channel=PortNumber, bitrate=250000)
         deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
         deltaMotorNode.nmt.state = 'OPERATIONAL'
         # docs https://hcrobots.feishu.cn/wiki/wikcnRos1XZ9nR1C5cXYaBgY1zd
         # p1-01 value is 0x010C
         p1_01 = deltaMotorNode.sdo[0x2101].read()
-        mainUI.textBrowser.append(f"p1-01 = {p1_01}")
+        mainUI.textBrowser.append(f"p1-01 = {hex(p1_01)}")
         # p1-42 value is 0
         p1_42 = deltaMotorNode.sdo[0x212A].read()
-        mainUI.textBrowser.append(f"p1-42 = {p1_42}")
+        mainUI.textBrowser.append(f"p1-42 = {hex(p1_42)}")
         # p1-43 value is 0
         p1_43 = deltaMotorNode.sdo[0x212B].read()
-        mainUI.textBrowser.append(f"p1-43 = {p1_43}")
+        mainUI.textBrowser.append(f"p1-43 = {hex(p1_43)}")
         # p2-10 value is 0124
         p2_10 = deltaMotorNode.sdo[0x220A].read()
-        mainUI.textBrowser.append(f"p2-10 = {p2_10}")
+        mainUI.textBrowser.append(f"p2-10 = {hex(p2_10)}")
         # p2-11 value is 0
         p2_11 = deltaMotorNode.sdo[0x220B].read()
-        mainUI.textBrowser.append(f"p2-11 = {p2_11}")
+        mainUI.textBrowser.append(f"p2-11 = {hex(p2_11)}")
         # p2-12 value is 0
         p2_12 = deltaMotorNode.sdo[0x220C].read()
-        mainUI.textBrowser.append(f"p2-12 = {p2_12}")
+        mainUI.textBrowser.append(f"p2-12 = {hex(p2_12)}")
         # p2-13 value is 0
         p2_13 = deltaMotorNode.sdo[0x220D].read()
-        mainUI.textBrowser.append(f"p2-13 = {p2_13}")
+        mainUI.textBrowser.append(f"p2-13 = {hex(p2_13)}")
         # p2-14 value is 0
         p2_14 = deltaMotorNode.sdo[0x220E].read()
-        mainUI.textBrowser.append(f"p2-14 = {p2_14}")
+        mainUI.textBrowser.append(f"p2-14 = {hex(p2_14)}")
         # p2-15 value is 0
         p2_15 =deltaMotorNode.sdo[0x220F].read()
-        mainUI.textBrowser.append(f"p2-15 = {p2_15}")
+        mainUI.textBrowser.append(f"p2-15 = {hex(p2_15)}")
         # p2-16 value is 0
         p2_16 = deltaMotorNode.sdo[0x2210].read()
-        mainUI.textBrowser.append(f"p2-16 = {p2_16}")
+        mainUI.textBrowser.append(f"p2-16 = {hex(p2_16)}")
         # p2-17 value is 0021
         p2_17 = deltaMotorNode.sdo[0x2211].read()
-        mainUI.textBrowser.append(f"p2-17 = {p2_17}")
+        mainUI.textBrowser.append(f"p2-17 = {hex(p2_17)}")
         # p2-18 value is 0
         p2_18 = deltaMotorNode.sdo[0x2212].read()
-        mainUI.textBrowser.append(f"p2-18= {p2_18}")
+        mainUI.textBrowser.append(f"p2-18= {hex(p2_18)}")
         # p2-19 value is 0
         p2_19 = deltaMotorNode.sdo[0x2213].read()
-        mainUI.textBrowser.append(f"p2-19= {p2_19}")
+        mainUI.textBrowser.append(f"p2-19= {hex(p2_19)}")
         # p2-20 value is 0108
         p2_20 = deltaMotorNode.sdo[0x2214].read()
-        mainUI.textBrowser.append(f"p2-20= {p2_20}")
+        mainUI.textBrowser.append(f"p2-20= {hex(p2_20)}")
         # p2-21 value is 0
         p2_21 = deltaMotorNode.sdo[0x2215].read()
-        mainUI.textBrowser.append(f"p2-21= {p2_21}")
+        mainUI.textBrowser.append(f"p2-21= {hex(p2_21)}")
         # p2-22 value is 0
         p2_22 = deltaMotorNode.sdo[0x2216].read()
-        mainUI.textBrowser.append(f"p2-22= {p2_22}")
+        mainUI.textBrowser.append(f"p2-22= {hex(p2_22)}")
         # p3-00 value is 01(up)
         p3_00 = deltaMotorNode.sdo[0x2300].read()
-        mainUI.textBrowser.append(f"p3-00= {p3_00}")
+        mainUI.textBrowser.append(f"p3-00= {hex(p3_00)}")
         # p3-01 value is 0x0103 bitrate == 250000
         p3_01 = deltaMotorNode.sdo[0x2301].read()
-        mainUI.textBrowser.append(f"p3-01= {p3_01}")
+        mainUI.textBrowser.append(f"p3-01= {hex(p3_01)}")
         print("read finished!")
         network.disconnect()
     except Exception:
@@ -239,6 +239,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         global NodeID
         NodeID = 0
         self.BtnTestLifter.setDisabled(False)
+        self.BtnCheckConfig.setDisabled(False)
         self.lineEdit.setDisabled(True)
         if self.canopenIdComboBox.currentText() == "1(上升列)":
             NodeID = 0x1
@@ -259,7 +260,10 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.BtnConfig.setDisabled(True)
         self.BtnTestLifter.setDisabled(True)
         self.BtnBaudDetect.setDisabled(True)
+        self.BtnCheckConfig.setDisabled(True)
+
     def detectBaud(self):
+        global Baud
         searchBaud()
 
     def configDriver(self):
