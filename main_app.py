@@ -1,14 +1,16 @@
 import sys
-
+import random
+import time
 import canopen as canopen
 import minimalmodbus as minimalmodbus
+import pyttsx3
 import serial
 import serial.tools.list_ports
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from mainPage import Ui_MainWindow
-from time import sleep
+
 
 #####################################################
 #                    功能函数区                       #
@@ -68,7 +70,7 @@ def configDeltaMotor(portNumber):
     except Exception:
         mainUI.textBrowser.append("参数配置失败，请重试")
 
-def testLifter(portNumber):
+def testPositionMode(portNumber):
     try:
         mainUI.textBrowser.append("开始测试提升机电机运转")
         network = canopen.Network()
@@ -95,6 +97,63 @@ def testLifter(portNumber):
         mainUI.textBrowser.append("提升机测试失败，请检查以下几点")
         mainUI.textBrowser.append("1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
 
+def sayText(words):
+    engine = pyttsx3.init()
+    engine.setProperty('rate', 200)
+    engine.setProperty('volume', 1.0)
+    engine.setProperty('voice', 'com.apple.speech.synthesis.voice.tingting')
+    engine.say(words)
+    engine.runAndWait()
+    engine.stop()
+
+def findDevice(baud):
+    network = canopen.Network()
+    network.connect(bustype='slcan', channel= PortNumber, bitrate=baud)
+    network.nmt.send_command(0x01)
+    # This will attempt to read an SDO from nodes 1 - 127
+    numbers = list(range(1, 128))
+    random.shuffle(numbers)
+    sdo_req = b"\x40\x00\x10\x00\x00\x00\x00\x00"
+    for node_id in numbers:
+        network.send_message(0x600 + node_id, sdo_req)
+    # We may need to wait a short while here to allow all nodes to respond
+    time.sleep(0.05)
+    for node_id in network.scanner.nodes:
+        mainUI.textBrowser.append(f"节点ID的为{node_id},16进制表示为{hex(node_id)}")
+        sayText(f"节点ID的为{node_id},16进制表示为{hex(node_id)}")
+        isFindDevice = True
+    network.disconnect()
+
+def searchBaud():
+    global isFindDevice
+    mainUI.textBrowser.append("开始检测波特率")
+    isFindDevice = False
+    while (isFindDevice == False):
+        baudList = {125000, 500000, 750000, 1000000, 250000, }
+        for baud in baudList:
+            findDevice(baud)
+            if (isFindDevice == True):
+                if (baud == 125000):
+                    mainUI.textBrowser.append(f"波特率为125000")
+                    sayText(f"波特率为125000")
+                    break
+                elif (baud == 250000):
+                    mainUI.textBrowser.append(f"波特率为250000")
+                    sayText(f"波特率为250000")
+                    break
+                elif (baud == 500000):
+                    mainUI.textBrowser.append(f"波特率为500000")
+                    sayText(f"波特率为500000")
+                    break
+                elif (baud == 1000000):
+                    mainUI.textBrowser.append(f"波特率为1000000")
+                    sayText(f"波特率为1000000")
+                    break
+                elif (baud == 750000):
+                    mainUI.textBrowser.append(f"波特率为750000")
+                    sayText(f"波特率为750000")
+                    break
+    mainUI.textBrowser.append("波特率检测完成")
 #####################################################
 #                    创建主界面                       #
 #####################################################
@@ -130,7 +189,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.textBrowser.append(f"传感器参数配置值为{SensorValue}")
 
     def detectBaud(self):
-        print("port change")
+        searchBaud()
+        mainUI.textBrowser.append("波特率")
 
     def detectNodeId(self):
         print("port change")
@@ -139,7 +199,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         configDeltaMotor(PortNumber)
 
     def testLifter(self):
-        testLifter(PortNumber)
+        testPositionMode(PortNumber)
 
     def inputRotationValue(self):
         global  RotationValue
