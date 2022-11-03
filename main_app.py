@@ -97,16 +97,9 @@ def testPositionMode(portNumber):
         mainUI.textBrowser.append("提升机测试失败，请检查以下几点")
         mainUI.textBrowser.append("1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
 
-def sayText(words):
-    engine = pyttsx3.init()
-    engine.setProperty('rate', 200)
-    engine.setProperty('volume', 1.0)
-    engine.setProperty('voice', 'com.apple.speech.synthesis.voice.tingting')
-    engine.say(words)
-    engine.runAndWait()
-    engine.stop()
 
 def findDevice(baud):
+    isFindDevice = False
     network = canopen.Network()
     network.connect(bustype='slcan', channel= PortNumber, bitrate=baud)
     network.nmt.send_command(0x01)
@@ -120,39 +113,34 @@ def findDevice(baud):
     time.sleep(0.05)
     for node_id in network.scanner.nodes:
         mainUI.textBrowser.append(f"节点ID的为{node_id},16进制表示为{hex(node_id)}")
-        sayText(f"节点ID的为{node_id},16进制表示为{hex(node_id)}")
         isFindDevice = True
     network.disconnect()
+    return isFindDevice
 
 def searchBaud():
-    global isFindDevice
     mainUI.textBrowser.append("开始检测波特率")
     isFindDevice = False
     while (isFindDevice == False):
-        baudList = {125000, 500000, 750000, 1000000, 250000, }
+        baudList = [125000, 500000, 750000, 1000000, 250000]
+        random.shuffle(baudList)
         for baud in baudList:
-            findDevice(baud)
+            isFindDevice = findDevice(baud)
             if (isFindDevice == True):
                 if (baud == 125000):
                     mainUI.textBrowser.append(f"波特率为125000")
-                    sayText(f"波特率为125000")
-                    break
+                    return
                 elif (baud == 250000):
                     mainUI.textBrowser.append(f"波特率为250000")
-                    sayText(f"波特率为250000")
-                    break
+                    return
                 elif (baud == 500000):
                     mainUI.textBrowser.append(f"波特率为500000")
-                    sayText(f"波特率为500000")
-                    break
+                    return
                 elif (baud == 1000000):
                     mainUI.textBrowser.append(f"波特率为1000000")
-                    sayText(f"波特率为1000000")
-                    break
+                    return
                 elif (baud == 750000):
                     mainUI.textBrowser.append(f"波特率为750000")
-                    sayText(f"波特率为750000")
-                    break
+                    return
     mainUI.textBrowser.append("波特率检测完成")
 #####################################################
 #                    创建主界面                       #
@@ -161,39 +149,51 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         global mainUI
         super(MyWindow, self).__init__(parent)
-        mainUI = self
         self.setupUi(self)
         self.ser = None  # 串口初始化为None
         self.timer = QTimer(self)  # 实例化一个定时器
         self.timer.timeout.connect(self.refresh)  # 定时器结束后触发refresh
         self.timer.start(300)  # 开启定时器，间隔0.3s
         self.setFont(QFont('Helvetica Neue'))
+        self.disableButton()
+        mainUI = self
     def changePort(self):
         global PortNumber
+        if(self.serialcComboBox.currentText() != "选择串口"):
+            self.canopenIdComboBox.setDisabled(False)
+            self.SensorDetectcomboBox.setDisabled(False)
+            self.BtnBaudDetect.setDisabled(False)
+        else:
+            self.disableButton()
         PortNumber = self.serialcComboBox.currentText()
         self.textBrowser.setPlainText(f"切换到串口 {PortNumber}")
 
     def changenodeId(self):
         global NodeID
+        NodeID = 0
+        self.BtnTestLifter.setDisabled(False)
+        self.lineEdit.setDisabled(True)
         if self.canopenIdComboBox.currentText() == "1(上升列)":
             NodeID = 0x1
-        else:
+        elif self.canopenIdComboBox.currentText() == "2(下降列)":
             NodeID = 0x2
         self.textBrowser.append(f"canopenID为{NodeID}")
     def ProtectSensor(self):
         global SensorValue
+        self.BtnConfig.setDisabled(False)
         if self.SensorDetectcomboBox.currentText() == "加保护":
             SensorValue = 0x21
         else:
             SensorValue = 0x0
         self.textBrowser.append(f"传感器参数配置值为{SensorValue}")
-
+    def disableButton(self):
+        self.canopenIdComboBox.setDisabled(True)
+        self.SensorDetectcomboBox.setDisabled(True)
+        self.BtnConfig.setDisabled(True)
+        self.BtnTestLifter.setDisabled(True)
+        self.BtnBaudDetect.setDisabled(True)
     def detectBaud(self):
         searchBaud()
-        mainUI.textBrowser.append("波特率")
-
-    def detectNodeId(self):
-        print("port change")
 
     def configDriver(self):
         configDeltaMotor(PortNumber)
@@ -202,7 +202,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         testPositionMode(PortNumber)
 
     def inputRotationValue(self):
-        global  RotationValue
+        global RotationValue
         try:
             RotationValue = int(self.lineEdit.text())
         except Exception:
@@ -210,12 +210,13 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         print(RotationValue)
     def refresh(self):
         port_list = self.get_port_list()
-        num = len(port_list)
+        num = len(port_list)+1
         # print(num)
         num_last = self.serialcComboBox.count()
         # print(num_last)
         if (num != num_last):
             self.serialcComboBox.clear()
+            self.serialcComboBox.addItem('选择串口')
             self.serialcComboBox.addItems(self.get_port_list())   # 重新设置端口下拉列表
 
     @staticmethod

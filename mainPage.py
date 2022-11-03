@@ -51,6 +51,8 @@ class Ui_MainWindow(object):
         self.serialcComboBox = QtWidgets.QComboBox(self.groupBox_2)
         self.serialcComboBox.setGeometry(QtCore.QRect(80, 60, 151, 26))
         self.serialcComboBox.setObjectName("serialcComboBox")
+        self.serialcComboBox.addItem("")
+        self.serialcComboBox.setItemText(0, "")
         self.groupBox_3 = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox_3.setGeometry(QtCore.QRect(370, 390, 251, 191))
         font = QtGui.QFont()
@@ -66,6 +68,7 @@ class Ui_MainWindow(object):
         self.canopenIdComboBox = QtWidgets.QComboBox(self.groupBox_3)
         self.canopenIdComboBox.setGeometry(QtCore.QRect(120, 60, 111, 26))
         self.canopenIdComboBox.setObjectName("canopenIdComboBox")
+        self.canopenIdComboBox.addItem("")
         self.canopenIdComboBox.addItem("")
         self.canopenIdComboBox.addItem("")
         self.label_6 = QtWidgets.QLabel(self.groupBox_3)
@@ -92,17 +95,11 @@ class Ui_MainWindow(object):
         self.groupBox_4.setFont(font)
         self.groupBox_4.setObjectName("groupBox_4")
         self.BtnBaudDetect = QtWidgets.QPushButton(self.groupBox_4)
-        self.BtnBaudDetect.setGeometry(QtCore.QRect(130, 130, 113, 32))
+        self.BtnBaudDetect.setGeometry(QtCore.QRect(40, 130, 181, 32))
         font = QtGui.QFont()
         font.setPointSize(17)
         self.BtnBaudDetect.setFont(font)
         self.BtnBaudDetect.setObjectName("BtnBaudDetect")
-        self.BtnNodeIdDetect = QtWidgets.QPushButton(self.groupBox_4)
-        self.BtnNodeIdDetect.setGeometry(QtCore.QRect(10, 130, 111, 31))
-        font = QtGui.QFont()
-        font.setPointSize(17)
-        self.BtnNodeIdDetect.setFont(font)
-        self.BtnNodeIdDetect.setObjectName("BtnNodeIdDetect")
         self.BtnTestLifter = QtWidgets.QPushButton(self.groupBox_4)
         self.BtnTestLifter.setGeometry(QtCore.QRect(40, 90, 171, 32))
         font = QtGui.QFont()
@@ -133,7 +130,6 @@ class Ui_MainWindow(object):
         self.canopenIdComboBox.activated['QString'].connect(MainWindow.changenodeId) # type: ignore
         self.SensorDetectcomboBox.activated['QString'].connect(MainWindow.ProtectSensor) # type: ignore
         self.BtnBaudDetect.clicked.connect(MainWindow.detectBaud) # type: ignore
-        self.BtnNodeIdDetect.clicked.connect(MainWindow.detectNodeId) # type: ignore
         self.BtnConfig.clicked.connect(MainWindow.configDriver) # type: ignore
         self.BtnTestLifter.clicked.connect(MainWindow.testLifter) # type: ignore
         self.lineEdit.textChanged['QString'].connect(MainWindow.inputRotationValue) # type: ignore
@@ -147,15 +143,15 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "选串口"))
         self.groupBox_3.setTitle(_translate("MainWindow", "驱动器配置区："))
         self.label_5.setText(_translate("MainWindow", "CanopenID"))
-        self.canopenIdComboBox.setItemText(0, _translate("MainWindow", "1(上升列)"))
-        self.canopenIdComboBox.setItemText(1, _translate("MainWindow", "2(下降列)"))
+        self.canopenIdComboBox.setItemText(0, _translate("MainWindow", "选择ID"))
+        self.canopenIdComboBox.setItemText(1, _translate("MainWindow", "1(上升列)"))
+        self.canopenIdComboBox.setItemText(2, _translate("MainWindow", "2(下降列)"))
         self.label_6.setText(_translate("MainWindow", "保护传感器"))
         self.SensorDetectcomboBox.setItemText(0, _translate("MainWindow", "加保护"))
         self.SensorDetectcomboBox.setItemText(1, _translate("MainWindow", "不加保护"))
         self.BtnConfig.setText(_translate("MainWindow", "配置"))
         self.groupBox_4.setTitle(_translate("MainWindow", "CanOpen操作区："))
-        self.BtnBaudDetect.setText(_translate("MainWindow", "波特率检测"))
-        self.BtnNodeIdDetect.setText(_translate("MainWindow", "NodeID检测"))
+        self.BtnBaudDetect.setText(_translate("MainWindow", "波特率与nodeID检测"))
         self.BtnTestLifter.setText(_translate("MainWindow", "启动提升机测试"))
         self.label_3.setText(_translate("MainWindow", "旋转量输入:"))
 
