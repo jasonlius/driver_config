@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>989</width>
-    <height>723</height>
+    <width>1172</width>
+    <height>552</height>
    </rect>
   </property>
   <property name="font">
@@ -19,310 +19,308 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QGroupBox" name="groupBox">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>50</y>
-      <width>801</width>
-      <height>331</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string/>
-    </property>
-    <widget class="QTextBrowser" name="textBrowser">
-     <property name="geometry">
-      <rect>
-       <x>50</x>
-       <y>30</y>
-       <width>711</width>
-       <height>211</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>300</x>
-       <y>250</y>
-       <width>181</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>.Farah PUA</family>
-       <pointsize>18</pointsize>
-      </font>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
-     </property>
-     <property name="text">
-      <string>配置信息显示</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_2">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>390</y>
-      <width>251</width>
-      <height>191</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>17</pointsize>
-     </font>
-    </property>
-    <property name="title">
-     <string>串口设置区：</string>
-    </property>
-    <widget class="QLabel" name="label_2">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>50</y>
-       <width>51</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>17</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>选串口</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="serialcComboBox">
-     <property name="geometry">
-      <rect>
-       <x>80</x>
-       <y>60</y>
-       <width>151</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <item>
-      <property name="text">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0" colspan="3">
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
        <string/>
       </property>
-     </item>
-    </widget>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_3">
-    <property name="geometry">
-     <rect>
-      <x>370</x>
-      <y>390</y>
-      <width>251</width>
-      <height>191</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>17</pointsize>
-     </font>
-    </property>
-    <property name="title">
-     <string>驱动器配置区：</string>
-    </property>
-    <widget class="QLabel" name="label_5">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>50</y>
-       <width>91</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>17</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>CanopenID</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="canopenIdComboBox">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>60</y>
-       <width>111</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <item>
-      <property name="text">
-       <string>选择ID</string>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QTextBrowser" name="textBrowser"/>
+       </item>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="font">
+          <font>
+           <family>.Farah PUA</family>
+           <pointsize>18</pointsize>
+          </font>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>配置信息显示</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QGroupBox" name="groupBox_3">
+      <property name="font">
+       <font>
+        <pointsize>17</pointsize>
+       </font>
       </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>1(上升列)</string>
+      <property name="title">
+       <string>驱动器配置区：</string>
       </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>2(下降列)</string>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="font">
+          <font>
+           <pointsize>17</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>CanopenID</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="canopenIdComboBox">
+         <item>
+          <property name="text">
+           <string>选择ID</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>1(上升列)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>2(下降列)</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="font">
+          <font>
+           <pointsize>17</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>保护传感器</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="SensorDetectcomboBox">
+         <item>
+          <property name="text">
+           <string>加保护</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>不加保护</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="BtnConfig">
+         <property name="font">
+          <font>
+           <pointsize>17</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>配置</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="minimumSize">
+       <size>
+        <width>100</width>
+        <height>0</height>
+       </size>
       </property>
-     </item>
-    </widget>
-    <widget class="QLabel" name="label_6">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>90</y>
-       <width>91</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>17</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>保护传感器</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="SensorDetectcomboBox">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>100</y>
-       <width>111</width>
-       <height>26</height>
-      </rect>
-     </property>
-     <item>
-      <property name="text">
-       <string>加保护</string>
+      <property name="font">
+       <font>
+        <pointsize>17</pointsize>
+       </font>
       </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>不加保护</string>
+      <property name="title">
+       <string>串口设置区：</string>
       </property>
-     </item>
-    </widget>
-    <widget class="QPushButton" name="BtnConfig">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>130</y>
-       <width>81</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>17</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>配置</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QGroupBox" name="groupBox_4">
-    <property name="geometry">
-     <rect>
-      <x>640</x>
-      <y>390</y>
-      <width>251</width>
-      <height>191</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>17</pointsize>
-     </font>
-    </property>
-    <property name="title">
-     <string>CanOpen操作区：</string>
-    </property>
-    <widget class="QPushButton" name="BtnBaudDetect">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>130</y>
-       <width>181</width>
-       <height>32</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>17</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>波特率与nodeID检测</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="BtnTestLifter">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>90</y>
-       <width>171</width>
-       <height>32</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>17</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>启动提升机测试</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEdit">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>60</y>
-       <width>113</width>
-       <height>21</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_3">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>40</y>
-       <width>91</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>旋转量输入:</string>
-     </property>
-    </widget>
-   </widget>
-   <zorder>groupBox_2</zorder>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <spacer name="horizontalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="font">
+            <font>
+             <pointsize>17</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>选串口</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="serialcComboBox">
+           <property name="minimumSize">
+            <size>
+             <width>100</width>
+             <height>0</height>
+            </size>
+           </property>
+           <item>
+            <property name="text">
+             <string/>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>339</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QGroupBox" name="groupBox_4">
+      <property name="font">
+       <font>
+        <pointsize>17</pointsize>
+       </font>
+      </property>
+      <property name="title">
+       <string>CanOpen操作区：</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>旋转量输入:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit"/>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="BtnTestLifter">
+         <property name="font">
+          <font>
+           <pointsize>17</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>启动提升机测试</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="BtnBaudDetect">
+         <property name="font">
+          <font>
+           <pointsize>17</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>波特率与nodeID检测</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+   <zorder></zorder>
    <zorder>groupBox</zorder>
-   <zorder>groupBox_3</zorder>
-   <zorder>groupBox_4</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>989</width>
+     <width>1172</width>
      <height>24</height>
     </rect>
    </property>
@@ -338,12 +336,12 @@
    <slot>changePort()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>227</x>
-     <y>496</y>
+     <x>292</x>
+     <y>518</y>
     </hint>
     <hint type="destinationlabel">
      <x>304</x>
-     <y>634</y>
+     <y>628</y>
     </hint>
    </hints>
   </connection>
@@ -354,12 +352,12 @@
    <slot>changenodeId()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>558</x>
-     <y>498</y>
+     <x>684</x>
+     <y>480</y>
     </hint>
     <hint type="destinationlabel">
      <x>646</x>
-     <y>656</y>
+     <y>628</y>
     </hint>
    </hints>
   </connection>
@@ -370,12 +368,12 @@
    <slot>ProtectSensor()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>534</x>
-     <y>538</y>
+     <x>684</x>
+     <y>541</y>
     </hint>
     <hint type="destinationlabel">
      <x>891</x>
-     <y>640</y>
+     <y>628</y>
     </hint>
    </hints>
   </connection>
@@ -386,11 +384,11 @@
    <slot>detectBaud()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>825</x>
-     <y>567</y>
+     <x>909</x>
+     <y>525</y>
     </hint>
     <hint type="destinationlabel">
-     <x>944</x>
+     <x>911</x>
      <y>550</y>
     </hint>
    </hints>
@@ -402,12 +400,12 @@
    <slot>configDriver()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>481</x>
-     <y>571</y>
+     <x>687</x>
+     <y>578</y>
     </hint>
     <hint type="destinationlabel">
      <x>516</x>
-     <y>659</y>
+     <y>628</y>
     </hint>
    </hints>
   </connection>
@@ -418,11 +416,11 @@
    <slot>testLifter()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>765</x>
-     <y>527</y>
+     <x>849</x>
+     <y>477</y>
     </hint>
     <hint type="destinationlabel">
-     <x>957</x>
+     <x>911</x>
      <y>508</y>
     </hint>
    </hints>
@@ -434,11 +432,11 @@
    <slot>inputRotationValue()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>767</x>
-     <y>492</y>
+     <x>959</x>
+     <y>574</y>
     </hint>
     <hint type="destinationlabel">
-     <x>941</x>
+     <x>911</x>
      <y>451</y>
     </hint>
    </hints>
