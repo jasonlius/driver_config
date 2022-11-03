@@ -70,13 +70,17 @@ def configDeltaMotor(portNumber):
     except Exception:
         mainUI.textBrowser.append("参数配置失败，请重试")
 
+def initCanInterface(portNumber,baud):
+    mainUI.textBrowser.append("开始测试提升机电机运转")
+    network = canopen.Network()
+    network.connect(bustype='slcan', channel=portNumber, bitrate=baud)
+    deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
+    deltaMotorNode.nmt.state = 'OPERATIONAL'
+
 def testPositionMode(portNumber):
     try:
         mainUI.textBrowser.append("开始测试提升机电机运转")
-        network = canopen.Network()
-        network.connect(bustype='slcan', channel=portNumber, bitrate=250000)
-        deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
-        deltaMotorNode.nmt.state = 'OPERATIONAL'
+        initCanInterface(portNumber,Baud)
         deltaMotorNode.sdo[0x6060].write(0x01)
         deltaMotorNode.sdo[0x607A].write(100000000)
         deltaMotorNode.sdo[0x6081].write(5000000)
@@ -100,9 +104,7 @@ def testPositionMode(portNumber):
 
 def findDevice(baud):
     isFindDevice = False
-    network = canopen.Network()
-    network.connect(bustype='slcan', channel= PortNumber, bitrate=baud)
-    network.nmt.send_command(0x01)
+    initCanInterface(PortNumber,baud)
     # This will attempt to read an SDO from nodes 1 - 127
     numbers = list(range(1, 128))
     random.shuffle(numbers)
@@ -112,6 +114,7 @@ def findDevice(baud):
     # We may need to wait a short while here to allow all nodes to respond
     time.sleep(0.05)
     for node_id in network.scanner.nodes:
+        NodeID = node_id
         mainUI.textBrowser.append(f"节点ID的为{node_id},16进制表示为{hex(node_id)}")
         isFindDevice = True
     network.disconnect()
@@ -127,28 +130,30 @@ def searchBaud():
             isFindDevice = findDevice(baud)
             if (isFindDevice == True):
                 if (baud == 125000):
+                    Baud = baud
                     mainUI.textBrowser.append(f"波特率为125000")
                     return
                 elif (baud == 250000):
+                    Baud = baud
                     mainUI.textBrowser.append(f"波特率为250000")
                     return
                 elif (baud == 500000):
+                    Baud = baud
                     mainUI.textBrowser.append(f"波特率为500000")
                     return
                 elif (baud == 1000000):
+                    Baud = baud
                     mainUI.textBrowser.append(f"波特率为1000000")
                     return
                 elif (baud == 750000):
+                    Baud = baud
                     mainUI.textBrowser.append(f"波特率为750000")
                     return
     mainUI.textBrowser.append("波特率检测完成")
 
 def checkCurrentConfig():
     try:
-        network = canopen.Network()
-        network.connect(bustype='slcan', channel=PortNumber, bitrate=250000)
-        deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
-        deltaMotorNode.nmt.state = 'OPERATIONAL'
+        initCanInterface(PortNumber, Baud)
         # docs https://hcrobots.feishu.cn/wiki/wikcnRos1XZ9nR1C5cXYaBgY1zd
         # p1-01 value is 0x010C
         p1_01 = deltaMotorNode.sdo[0x2101].read()
@@ -237,6 +242,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
 
     def changenodeId(self):
         global NodeID
+        Baud = 250000
         NodeID = 0
         self.BtnTestLifter.setDisabled(False)
         self.BtnCheckConfig.setDisabled(False)
