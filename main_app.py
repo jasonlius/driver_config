@@ -49,7 +49,7 @@ def configDeltaMotor(portNumber):
         instrument.write_register(0x021E, 0x0, 0, 6)
         # P2-16参数 备注DI7
         instrument.write_register(0x0220, 0x0, 0, 6)
-        # P2-17参数 备注DI8只用于加保护传感器 默认值0x21，测试值0
+        # P2-   17参数 备注DI8只用于加保护传感器 默认值0x21，测试值0
         instrument.write_register(0x0222, SensorValue, 0, 6)
         # P2-18参数 备注Do1
         instrument.write_register(0x0224, 0x0, 0, 6)
