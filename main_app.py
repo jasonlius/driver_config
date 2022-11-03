@@ -270,6 +270,9 @@ class MyWindow(QMainWindow, Ui_MainWindow):
 
     def checkConfig(self):
         self.textBrowser.append(f"开始检测配置值")
+        self.textBrowser.append(f"------------------------")
+        checkCurrentConfig()
+        self.textBrowser.append(f"------------------------")
 
     def inputRotationValue(self):
         global RotationValue
