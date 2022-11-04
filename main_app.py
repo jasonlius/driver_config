@@ -71,7 +71,7 @@ def configDeltaMotor(portNumber):
 
 #初始化Canopen socket
 def initCanInterface(portNumber,baud):
-    mainUI.textBrowser.append("初始化CanOpen接口")
+    mainUI.textBrowser.append("初始化CanOpen接口")  
     network = canopen.Network()
     network.connect(bustype='slcan', channel=portNumber, bitrate=baud)
     mainUI.textBrowser.append("CanOpen接口初始化完成")
@@ -85,6 +85,7 @@ def testPositionMode(portNumber):
         network = initCanInterface(portNumber,Baud)
         deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
         deltaMotorNode.nmt.state = 'OPERATIONAL'
+        # deltaMotorNode.sdo.RESPONSE_TIMEOUT = 0.5
         deltaMotorNode.sdo[0x6060].write(0x01)
         deltaMotorNode.sdo[0x607A].write(100000000)
         deltaMotorNode.sdo[0x6081].write(5000000)
@@ -112,8 +113,7 @@ def testPositionMode(portNumber):
 def findDevice(baud):
     isFindDevice = False
     network = initCanInterface(PortNumber,baud)
-    deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
-    deltaMotorNode.nmt.state = 'OPERATIONAL'
+    network.nmt.send_command(0x01)
     # This will attempt to read an SDO from nodes 1 - 127
     numbers = list(range(1, 128))
     random.shuffle(numbers)
@@ -134,7 +134,7 @@ def searchBaud():
     isFindDevice = False
     while (isFindDevice == False):
         baudList = [125000, 500000, 750000, 1000000, 250000]
-        random.shuffle(baudList)
+        baudList = random.shuffle(baudList)
         for baud in baudList:
             isFindDevice = findDevice(baud)
             if (isFindDevice == True):
@@ -256,7 +256,6 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     def changenodeId(self):
         global NodeID
         NodeID = 0
-        
         self.BtnTestLifter.setDisabled(False)
         self.BtnCheckConfig.setDisabled(False)
         self.lineEdit.setDisabled(True)
@@ -265,7 +264,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         elif self.canopenIdComboBox.currentText() == "2(下降列)":
             NodeID = 0x2
         self.textBrowser.append(f"canopenID为{NodeID}")
-        self.textBrowser.append(f"baud为{Baud}")
+
     def ProtectSensor(self):
         global SensorValue
         self.BtnConfig.setDisabled(False)
