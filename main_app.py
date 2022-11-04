@@ -85,7 +85,6 @@ def testPositionMode(portNumber):
         network = initCanInterface(portNumber,Baud)
         deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
         deltaMotorNode.nmt.state = 'OPERATIONAL'
-        # deltaMotorNode.sdo.RESPONSE_TIMEOUT = 0.5
         deltaMotorNode.sdo[0x6060].write(0x01)
         deltaMotorNode.sdo[0x607A].write(100000000)
         deltaMotorNode.sdo[0x6081].write(5000000)
@@ -111,6 +110,7 @@ def testPositionMode(portNumber):
 
 
 def findDevice(baud):
+    global NodeID
     isFindDevice = False
     network = initCanInterface(PortNumber,baud)
     network.nmt.send_command(0x01)
@@ -130,11 +130,12 @@ def findDevice(baud):
     return isFindDevice
 
 def searchBaud():
+    global Baud
     mainUI.textBrowser.append("开始检测波特率")
     isFindDevice = False
     while (isFindDevice == False):
         baudList = [125000, 500000, 750000, 1000000, 250000]
-        baudList = random.shuffle(baudList)
+        random.shuffle(baudList)
         for baud in baudList:
             isFindDevice = findDevice(baud)
             if (isFindDevice == True):
@@ -233,6 +234,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         global mainUI
         global Baud
         Baud = 250000
+        global NodeID
+        NodeID = 0
         super(MyWindow, self).__init__(parent)
         self.setupUi(self)
         self.ser = None  # 串口初始化为None
@@ -254,8 +257,6 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.textBrowser.setPlainText(f"切换到串口 {PortNumber}")
 
     def changenodeId(self):
-        global NodeID
-        NodeID = 0
         self.BtnTestLifter.setDisabled(False)
         self.BtnCheckConfig.setDisabled(False)
         self.lineEdit.setDisabled(True)
@@ -283,6 +284,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
 
     def detectBaud(self):
         searchBaud()
+        self.BtnTestLifter.setDisabled(False)
 
     def configDriver(self):
         configDeltaMotor(PortNumber)
