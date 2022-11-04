@@ -3,7 +3,6 @@ import random
 import time
 import canopen as canopen
 import minimalmodbus as minimalmodbus
-import pyttsx3
 import serial
 import serial.tools.list_ports
 from PyQt5.QtCore import QTimer
@@ -70,11 +69,20 @@ def configDeltaMotor(portNumber):
     except Exception:
         mainUI.textBrowser.append("参数配置失败，请重试")
 
+#初始化Canopen socket
+def initCanInterface(portNumber,baud):
+    mainUI.textBrowser.append("初始化CanOpen接口")  
+    network = canopen.Network()
+    network.connect(bustype='slcan', channel=portNumber, bitrate=baud)
+    mainUI.textBrowser.append("CanOpen接口初始化完成")
+    return network
+
+#控制驱动器，使电机按照位置模式运行。
+#A2驱动器canopen通信协议控制，参考台达A2CANOpen英文文档中profile position mode一节
 def testPositionMode(portNumber):
     try:
         mainUI.textBrowser.append("开始测试提升机电机运转")
-        network = canopen.Network()
-        network.connect(bustype='slcan', channel=portNumber, bitrate=250000)
+        network = initCanInterface(portNumber,Baud)
         deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
         deltaMotorNode.nmt.state = 'OPERATIONAL'
         deltaMotorNode.sdo[0x6060].write(0x01)
@@ -87,8 +95,11 @@ def testPositionMode(portNumber):
         deltaMotorNode.sdo[0x6040].write(0x07)
         deltaMotorNode.sdo[0x6040].write(0x0F)
         deltaMotorNode.sdo[0x6040].write(0x7F)
+        #check current position of The motor（The unit is PPU）
         current_position =  deltaMotorNode.sdo[0x6064].read()
         mainUI.textBrowser.append(f"电机当前位置为:{current_position}PPU")
+        #check current running state of The motor
+        # the specific meaning of state code refere to delta documentation
         current_status =  deltaMotorNode.sdo[0x6041].read()
         mainUI.textBrowser.append(f"当前电机运转状态码:{current_status}")
         mainUI.textBrowser.append("提升机测试运转成功")
@@ -99,9 +110,9 @@ def testPositionMode(portNumber):
 
 
 def findDevice(baud):
+    global NodeID
     isFindDevice = False
-    network = canopen.Network()
-    network.connect(bustype='slcan', channel= PortNumber, bitrate=baud)
+    network = initCanInterface(PortNumber,baud)
     network.nmt.send_command(0x01)
     # This will attempt to read an SDO from nodes 1 - 127
     numbers = list(range(1, 128))
@@ -112,12 +123,14 @@ def findDevice(baud):
     # We may need to wait a short while here to allow all nodes to respond
     time.sleep(0.05)
     for node_id in network.scanner.nodes:
+        NodeID = node_id
         mainUI.textBrowser.append(f"节点ID的为{node_id},16进制表示为{hex(node_id)}")
         isFindDevice = True
     network.disconnect()
     return isFindDevice
 
 def searchBaud():
+    global Baud
     mainUI.textBrowser.append("开始检测波特率")
     isFindDevice = False
     while (isFindDevice == False):
@@ -127,26 +140,30 @@ def searchBaud():
             isFindDevice = findDevice(baud)
             if (isFindDevice == True):
                 if (baud == 125000):
+                    Baud = baud
                     mainUI.textBrowser.append(f"波特率为125000")
                     return
                 elif (baud == 250000):
+                    Baud = baud
                     mainUI.textBrowser.append(f"波特率为250000")
                     return
                 elif (baud == 500000):
+                    Baud = baud
                     mainUI.textBrowser.append(f"波特率为500000")
                     return
                 elif (baud == 1000000):
+                    Baud = baud
                     mainUI.textBrowser.append(f"波特率为1000000")
                     return
                 elif (baud == 750000):
+                    Baud = baud
                     mainUI.textBrowser.append(f"波特率为750000")
                     return
     mainUI.textBrowser.append("波特率检测完成")
 
 def checkCurrentConfig():
     try:
-        network = canopen.Network()
-        network.connect(bustype='slcan', channel=PortNumber, bitrate=250000)
+        network = initCanInterface(PortNumber, Baud)
         deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
         deltaMotorNode.nmt.state = 'OPERATIONAL'
         # docs https://hcrobots.feishu.cn/wiki/wikcnRos1XZ9nR1C5cXYaBgY1zd
@@ -215,6 +232,10 @@ def checkCurrentConfig():
 class MyWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         global mainUI
+        global Baud
+        Baud = 250000
+        global NodeID
+        NodeID = 0
         super(MyWindow, self).__init__(parent)
         self.setupUi(self)
         self.ser = None  # 串口初始化为None
@@ -236,8 +257,6 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.textBrowser.setPlainText(f"切换到串口 {PortNumber}")
 
     def changenodeId(self):
-        global NodeID
-        NodeID = 0
         self.BtnTestLifter.setDisabled(False)
         self.BtnCheckConfig.setDisabled(False)
         self.lineEdit.setDisabled(True)
@@ -246,6 +265,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         elif self.canopenIdComboBox.currentText() == "2(下降列)":
             NodeID = 0x2
         self.textBrowser.append(f"canopenID为{NodeID}")
+
     def ProtectSensor(self):
         global SensorValue
         self.BtnConfig.setDisabled(False)
@@ -263,8 +283,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.BtnCheckConfig.setDisabled(True)
 
     def detectBaud(self):
-        global Baud
         searchBaud()
+        self.BtnTestLifter.setDisabled(False)
 
     def configDriver(self):
         configDeltaMotor(PortNumber)
