@@ -15,8 +15,7 @@ from mainPage import Ui_MainWindow
 #                    功能函数区                       #
 #####################################################
 
-#配置根据公司给出的参数表配置台达电机
-def configDeltaMotor(portNumber):
+def initModbusInterface(portNumber):
     try:
         # modBus协议基本串口参数配置
         mainUI.textBrowser.append("初始化连接串口")
@@ -26,14 +25,23 @@ def configDeltaMotor(portNumber):
         instrument.serial.stopbits = 2
         instrument.serial.parity = serial.PARITY_NONE
         instrument.mode = minimalmodbus.MODE_RTU
+        return instrument
     except Exception:
         mainUI.textBrowser.append("初始化串口失败，请检查连线是否已经插牢，或者串口是否选择错误")
 
+
+#配置根据公司给出的参数表配置台达电机
+def configDeltaMotor(portNumber):
+    instrument = initModbusInterface(portNumber)
     try:
         mainUI.textBrowser.append("开始配置参数")
         # P1-01参数
         # 标准CANOpen，需要根据提升机现场实际运行方向进行调整，配置值为0x000C或0x010C。向上提升方向为正。
         instrument.write_register(0x0102, 0x10c, 0, 6)
+        # P1-42参数 刹车开启延时,单位ms
+        instrument.write_register(0x0154,0x0, 0, 6)
+        # P1-43参数 刹车关闭延时，单位ms
+        instrument.write_register(0x0156,0x0, 0, 6)
         # P2-10参数 备注DI1
         instrument.write_register(0x0214, 0x0124, 0, 6)
         # P2-11参数 备注DI2
@@ -48,7 +56,7 @@ def configDeltaMotor(portNumber):
         instrument.write_register(0x021E, 0x0, 0, 6)
         # P2-16参数 备注DI7
         instrument.write_register(0x0220, 0x0, 0, 6)
-        # P2-   17参数 备注DI8只用于加保护传感器 默认值0x21，测试值0
+        # P2-17参数 备注DI8只用于加保护传感器 默认值0x21，测试值0
         instrument.write_register(0x0222, SensorValue, 0, 6)
         # P2-18参数 备注Do1
         instrument.write_register(0x0224, 0x0, 0, 6)
@@ -68,6 +76,72 @@ def configDeltaMotor(portNumber):
         mainUI.textBrowser.append("驱动器参数配置成功")
     except Exception:
         mainUI.textBrowser.append("参数配置失败，请重试")
+
+def checkDeltaConfigInfo(portNumber):
+    instrument = initModbusInterface(portNumber)
+    try:
+        mainUI.textBrowser.append("开读取参数")
+        # P1-01参数
+        # 标准CANOpen，需要根据提升机现场实际运行方向进行调整，配置值为0x000C或0x010C。向上提升方向为正。
+        p1_01 = instrument.read_register(0x0102)
+        mainUI.textBrowser.append(f"p1-01 = {hex(p1_01)}")
+        # P1-42参数 刹车开启延时,单位ms
+        p1_42 = instrument.read_register(0x0154)
+        mainUI.textBrowser.append(f"p1-42 = {hex(p1_42)}")
+        # P1-43参数 刹车关闭延时，单位ms
+        p1_43 = instrument.read_register(0x0156)
+        mainUI.textBrowser.append(f"p1-43 = {hex(p1_43)}")
+        # P2-10参数 备注DI1
+        p2_10 = instrument.read_register(0x0214)
+        mainUI.textBrowser.append(f"p2-10 = {hex(p2_10)}")
+        # P2-11参数 备注DI2
+        p2_11 = instrument.read_register(0x0216)
+        mainUI.textBrowser.append(f"p2-11 = {hex(p2_11)}")
+        # P2-12参数 备注DI3
+        p2_12 =instrument.read_register(0x0218)
+        mainUI.textBrowser.append(f"p2-12 = {hex(p2_12)}")
+        # P2-13参数 备注DI4
+        p2_13 =instrument.read_register(0x021A)
+        mainUI.textBrowser.append(f"p2-13 = {hex(p2_13)}")
+        # P2-14参数 备注DI5
+        p2_14 = instrument.read_register(0x021C)
+        mainUI.textBrowser.append(f"p2-14 = {hex(p2_14)}")
+        # P2-15参数 备注DI6
+        p2_15 = instrument.read_register(0x021E)
+        mainUI.textBrowser.append(f"p2-15 = {hex(p2_15)}")
+        # P2-16参数 备注DI7
+        p2_16 = instrument.read_register(0x0220)
+        mainUI.textBrowser.append(f"p2-16 = {hex(p2_16)}")
+        # P2-17参数 备注DI8只用于加保护传感器 默认值0x21，测试值0
+        p2_17 = instrument.read_register(0x0222)
+        mainUI.textBrowser.append(f"p2-17 = {hex(p2_17)}")
+        # P2-18参数 备注Do1
+        p2_18 = instrument.read_register(0x0224)
+        mainUI.textBrowser.append(f"p2-18 = {hex(p2_18)}")
+        # P2-19参数 备注Do2
+        p2_19 = instrument.read_register(0x0226)
+        mainUI.textBrowser.append(f"p2-19 = {hex(p2_19)}")
+        # P2-20参数 备注Do3
+        p2_20 = instrument.read_register(0x0228)
+        mainUI.textBrowser.append(f"p2-20 = {hex(p2_20)}")
+        # P2-21参数 备注Do4
+        p2_21 = instrument.read_register(0x022A)
+        mainUI.textBrowser.append(f"p2-21 = {hex(p2_21)}")
+        # P2-22参数 备注Do5
+        p2_22 = instrument.read_register(0x022C)
+        mainUI.textBrowser.append(f"p2-22 = {hex(p2_22)}")
+        # P3-00参数 备注CANOpen node ID，上升列为1，下降列为2
+        p3_00 = instrument.read_register(0x0300)
+        mainUI.textBrowser.append(f"p3-00 = {hex(p3_00)}")
+        # P3-01参数 备注CANOpen 波特率CAN bus 250 Kbps
+        p3_01 = instrument.read_register(0x0302)
+        mainUI.textBrowser.append(f"p3-01 = {hex(p3_01)}")
+        instrument.serial.close()
+        mainUI.textBrowser.append("驱动器读取成功")
+    except Exception:
+        mainUI.textBrowser.append("参数读取失败，请重试")
+
+
 
 #初始化Canopen socket
 def initCanInterface(portNumber,baud):
@@ -238,25 +312,34 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         NodeID = 0
         super(MyWindow, self).__init__(parent)
         self.setupUi(self)
+        #--------------------------------------------------------------------
+        #设置一个串口检测定时器，每隔0.3自动触发refresh方法刷新串口
         self.ser = None  # 串口初始化为None
         self.timer = QTimer(self)  # 实例化一个定时器
         self.timer.timeout.connect(self.refresh)  # 定时器结束后触发refresh
         self.timer.start(300)  # 开启定时器，间隔0.3s
+        # --------------------------------------------------------------------
         self.setFont(QFont('Helvetica Neue'))
         self.disableButton()
         mainUI = self
+
+    #####################################################
+    #                    UI按钮函数区                     #
+    #####################################################
     def changePort(self):
         global PortNumber
         if(self.serialcComboBox.currentText() != "选择串口"):
             self.canopenIdComboBox.setDisabled(False)
             self.SensorDetectcomboBox.setDisabled(False)
             self.BtnBaudDetect.setDisabled(False)
+            self.BtnCheckConfigModbus.setDisabled(False)
         else:
             self.disableButton()
         PortNumber = self.serialcComboBox.currentText()
         self.textBrowser.setPlainText(f"切换到串口 {PortNumber}")
 
     def changenodeId(self):
+        global NodeID
         self.BtnTestLifter.setDisabled(False)
         self.BtnCheckConfig.setDisabled(False)
         self.lineEdit.setDisabled(True)
@@ -281,6 +364,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.BtnTestLifter.setDisabled(True)
         self.BtnBaudDetect.setDisabled(True)
         self.BtnCheckConfig.setDisabled(True)
+        self.BtnCheckConfigModbus.setDisabled(True)
 
     def detectBaud(self):
         searchBaud()
@@ -305,6 +389,18 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         except Exception:
             mainUI.textBrowser.append("错误，请输入数字")
         print(RotationValue)
+
+    def checkConfigModbus(self):
+        self.textBrowser.append(f"开始检测配置值")
+        self.textBrowser.append(f"------------------------")
+        checkDeltaConfigInfo(PortNumber)
+        self.textBrowser.append(f"------------------------")
+
+
+
+
+    #------------------------------------------------------------------
+    #串口检测区
     def refresh(self):
         port_list = self.get_port_list()
         num = len(port_list)+1
@@ -328,7 +424,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         for port in port_list:
             com_list.append(port[0])  # 保存端口到列表
         return com_list  # 返回列表
-
+    # ------------------------------------------------------------------
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
