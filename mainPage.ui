@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>575</width>
-    <height>621</height>
+    <width>1072</width>
+    <height>824</height>
    </rect>
   </property>
   <property name="font">
@@ -45,115 +45,6 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QGroupBox" name="groupBox_3">
-      <property name="font">
-       <font>
-        <pointsize>17</pointsize>
-       </font>
-      </property>
-      <property name="title">
-       <string>驱动器配置区：</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QLabel" name="label_5">
-         <property name="font">
-          <font>
-           <pointsize>17</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>CanopenID</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="canopenIdComboBox">
-         <item>
-          <property name="text">
-           <string>选择ID</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>1(上升列)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>2(下降列)</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_6">
-         <property name="font">
-          <font>
-           <pointsize>17</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>保护传感器</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="SensorDetectcomboBox">
-         <item>
-          <property name="text">
-           <string>加保护</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>不加保护</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_5">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="BtnConfig">
-         <property name="font">
-          <font>
-           <pointsize>17</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>配置</string>
          </property>
         </widget>
        </item>
@@ -315,6 +206,127 @@
       </layout>
      </widget>
     </item>
+    <item row="1" column="1">
+     <widget class="QGroupBox" name="groupBox_3">
+      <property name="font">
+       <font>
+        <pointsize>17</pointsize>
+       </font>
+      </property>
+      <property name="title">
+       <string>驱动器配置区：</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QPushButton" name="BtnCheckConfigModbus">
+         <property name="font">
+          <font>
+           <pointsize>17</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>查看当前驱动器配置（MODBUS）</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="font">
+          <font>
+           <pointsize>17</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>CanopenID</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="canopenIdComboBox">
+         <item>
+          <property name="text">
+           <string>选择ID</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>1(上升列)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>2(下降列)</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="font">
+          <font>
+           <pointsize>17</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>保护传感器</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="SensorDetectcomboBox">
+         <item>
+          <property name="text">
+           <string>加保护</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>不加保护</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="BtnConfig">
+         <property name="font">
+          <font>
+           <pointsize>17</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>配置</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
    </layout>
    <zorder>groupBox_3</zorder>
    <zorder>groupBox_2</zorder>
@@ -326,7 +338,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>575</width>
+     <width>1072</width>
      <height>24</height>
     </rect>
    </property>
@@ -342,8 +354,8 @@
    <slot>changePort()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>311</x>
-     <y>508</y>
+     <x>365</x>
+     <y>662</y>
     </hint>
     <hint type="destinationlabel">
      <x>304</x>
@@ -358,8 +370,8 @@
    <slot>changenodeId()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>476</x>
-     <y>442</y>
+     <x>658</x>
+     <y>617</y>
     </hint>
     <hint type="destinationlabel">
      <x>646</x>
@@ -374,8 +386,8 @@
    <slot>ProtectSensor()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>476</x>
-     <y>533</y>
+     <x>658</x>
+     <y>708</y>
     </hint>
     <hint type="destinationlabel">
      <x>733</x>
@@ -390,8 +402,8 @@
    <slot>detectBaud()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>774</x>
-     <y>580</y>
+     <x>1000</x>
+     <y>783</y>
     </hint>
     <hint type="destinationlabel">
      <x>733</x>
@@ -406,8 +418,8 @@
    <slot>configDriver()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>479</x>
-     <y>580</y>
+     <x>661</x>
+     <y>783</y>
     </hint>
     <hint type="destinationlabel">
      <x>516</x>
@@ -422,8 +434,8 @@
    <slot>testLifter()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>736</x>
-     <y>500</y>
+     <x>1000</x>
+     <y>742</y>
     </hint>
     <hint type="destinationlabel">
      <x>733</x>
@@ -438,8 +450,8 @@
    <slot>inputRotationValue()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>844</x>
-     <y>481</y>
+     <x>994</x>
+     <y>699</y>
     </hint>
     <hint type="destinationlabel">
      <x>733</x>
@@ -454,12 +466,28 @@
    <slot>checkConfig()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>731</x>
-     <y>387</y>
+     <x>950</x>
+     <y>547</y>
     </hint>
     <hint type="destinationlabel">
      <x>733</x>
      <y>364</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>BtnCheckConfigModbus</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>checkConfigModbus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>537</x>
+     <y>552</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>729</x>
+     <y>681</y>
     </hint>
    </hints>
   </connection>
@@ -474,5 +502,6 @@
   <slot>testLifter()</slot>
   <slot>inputRotationValue()</slot>
   <slot>checkConfig()</slot>
+  <slot>checkConfigModbus()</slot>
  </slots>
 </ui>
