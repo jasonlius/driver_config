@@ -339,6 +339,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.textBrowser.setPlainText(f"切换到串口 {PortNumber}")
 
     def changenodeId(self):
+        global NodeID
         self.BtnTestLifter.setDisabled(False)
         self.BtnCheckConfig.setDisabled(False)
         self.lineEdit.setDisabled(True)
