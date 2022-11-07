@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1072, 824)
+        MainWindow.resize(1054, 807)
         font = QtGui.QFont()
         font.setFamily("Academy Engraved LET")
         MainWindow.setFont(font)
@@ -145,12 +145,21 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.addWidget(self.SensorDetectcomboBox)
         spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.verticalLayout_3.addItem(spacerItem4)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.BtnConfig = QtWidgets.QPushButton(self.groupBox_3)
         font = QtGui.QFont()
         font.setPointSize(17)
         self.BtnConfig.setFont(font)
         self.BtnConfig.setObjectName("BtnConfig")
-        self.verticalLayout_3.addWidget(self.BtnConfig)
+        self.horizontalLayout_2.addWidget(self.BtnConfig)
+        self.BtnNodeIdDetectionModbus = QtWidgets.QPushButton(self.groupBox_3)
+        font = QtGui.QFont()
+        font.setPointSize(17)
+        self.BtnNodeIdDetectionModbus.setFont(font)
+        self.BtnNodeIdDetectionModbus.setObjectName("BtnNodeIdDetectionModbus")
+        self.horizontalLayout_2.addWidget(self.BtnNodeIdDetectionModbus)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_2)
         self.gridLayout.addWidget(self.groupBox_3, 1, 1, 1, 1)
         self.groupBox_3.raise_()
         self.groupBox_2.raise_()
@@ -158,7 +167,7 @@ class Ui_MainWindow(object):
         self.groupBox.raise_()
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1072, 24))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1054, 24))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -175,6 +184,7 @@ class Ui_MainWindow(object):
         self.lineEdit.textChanged['QString'].connect(MainWindow.inputRotationValue) # type: ignore
         self.BtnCheckConfig.clicked.connect(MainWindow.checkConfig) # type: ignore
         self.BtnCheckConfigModbus.clicked.connect(MainWindow.checkConfigModbus) # type: ignore
+        self.BtnNodeIdDetectionModbus.clicked.connect(MainWindow.nodeIdDetectionModbus) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -198,6 +208,7 @@ class Ui_MainWindow(object):
         self.SensorDetectcomboBox.setItemText(0, _translate("MainWindow", "加保护"))
         self.SensorDetectcomboBox.setItemText(1, _translate("MainWindow", "不加保护"))
         self.BtnConfig.setText(_translate("MainWindow", "配置"))
+        self.BtnNodeIdDetectionModbus.setText(_translate("MainWindow", "NodeID检测(MODBUS)"))
 
 
 if __name__ == "__main__":

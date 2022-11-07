@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1072</width>
-    <height>824</height>
+    <width>1054</width>
+    <height>807</height>
    </rect>
   </property>
   <property name="font">
@@ -313,16 +313,32 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="BtnConfig">
-         <property name="font">
-          <font>
-           <pointsize>17</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>配置</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QPushButton" name="BtnConfig">
+           <property name="font">
+            <font>
+             <pointsize>17</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>配置</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="BtnNodeIdDetectionModbus">
+           <property name="font">
+            <font>
+             <pointsize>17</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>NodeID检测(MODBUS)</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -338,7 +354,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1072</width>
+     <width>1054</width>
      <height>24</height>
     </rect>
    </property>
@@ -355,7 +371,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>365</x>
-     <y>662</y>
+     <y>641</y>
     </hint>
     <hint type="destinationlabel">
      <x>304</x>
@@ -370,8 +386,8 @@
    <slot>changenodeId()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>658</x>
-     <y>617</y>
+     <x>710</x>
+     <y>592</y>
     </hint>
     <hint type="destinationlabel">
      <x>646</x>
@@ -386,8 +402,8 @@
    <slot>ProtectSensor()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>658</x>
-     <y>708</y>
+     <x>710</x>
+     <y>683</y>
     </hint>
     <hint type="destinationlabel">
      <x>733</x>
@@ -402,8 +418,8 @@
    <slot>detectBaud()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1000</x>
-     <y>783</y>
+     <x>1032</x>
+     <y>766</y>
     </hint>
     <hint type="destinationlabel">
      <x>733</x>
@@ -418,8 +434,8 @@
    <slot>configDriver()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>661</x>
-     <y>783</y>
+     <x>487</x>
+     <y>758</y>
     </hint>
     <hint type="destinationlabel">
      <x>516</x>
@@ -434,8 +450,8 @@
    <slot>testLifter()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1000</x>
-     <y>742</y>
+     <x>1032</x>
+     <y>725</y>
     </hint>
     <hint type="destinationlabel">
      <x>733</x>
@@ -450,8 +466,8 @@
    <slot>inputRotationValue()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>994</x>
-     <y>699</y>
+     <x>1026</x>
+     <y>682</y>
     </hint>
     <hint type="destinationlabel">
      <x>733</x>
@@ -466,8 +482,8 @@
    <slot>checkConfig()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>950</x>
-     <y>547</y>
+     <x>1032</x>
+     <y>534</y>
     </hint>
     <hint type="destinationlabel">
      <x>733</x>
@@ -482,12 +498,28 @@
    <slot>checkConfigModbus()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>537</x>
-     <y>552</y>
+     <x>713</x>
+     <y>534</y>
     </hint>
     <hint type="destinationlabel">
      <x>729</x>
      <y>681</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>BtnNodeIdDetectionModbus</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>nodeIdDetectionModbus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>548</x>
+     <y>747</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>676</x>
+     <y>782</y>
     </hint>
    </hints>
   </connection>
@@ -503,5 +535,6 @@
   <slot>inputRotationValue()</slot>
   <slot>checkConfig()</slot>
   <slot>checkConfigModbus()</slot>
+  <slot>nodeIdDetectionModbus()</slot>
  </slots>
 </ui>

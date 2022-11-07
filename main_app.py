@@ -241,9 +241,9 @@ def detectModBusID():
         try:
             node = initModbusInterface(PortNumber,id)
             p3_01 = node.read_register(0x0302)
-            print(f"找到节点：{NodeID}")
+            print(f"找到节点：{id}")
             return
-        except ModbusException:
+        except Exception:
             node.serial.close()
             continue
 
@@ -408,6 +408,10 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.textBrowser.append(f"------------------------")
         checkDeltaConfigInfo(PortNumber)
         self.textBrowser.append(f"------------------------")
+
+    def nodeIdDetectionModbus(self):
+        detectModBusID()
+
 
 
     #------------------------------------------------------------------
