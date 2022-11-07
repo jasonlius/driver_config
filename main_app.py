@@ -9,17 +9,17 @@ from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from mainPage import Ui_MainWindow
-
+from minimalmodbus import ModbusException
 
 #####################################################
 #                    功能函数区                       #
 #####################################################
 
-def initModbusInterface(portNumber):
+def initModbusInterface(portNumber,nodeID):
     try:
         # modBus协议基本串口参数配置
         mainUI.textBrowser.append("初始化连接串口")
-        instrument = minimalmodbus.Instrument(portNumber, 0x7f)  # port name, slave address (in decimal)
+        instrument = minimalmodbus.Instrument(portNumber, nodeID)  # port name, slave address (in decimal)
         instrument.serial.baudrate = 38400
         instrument.serial.bytesize = 8
         instrument.serial.stopbits = 2
@@ -32,7 +32,7 @@ def initModbusInterface(portNumber):
 
 #配置根据公司给出的参数表配置台达电机
 def configDeltaMotor(portNumber):
-    instrument = initModbusInterface(portNumber)
+    instrument = initModbusInterface(portNumber,0x7f)
     try:
         mainUI.textBrowser.append("开始配置参数")
         # P1-01参数
@@ -78,7 +78,7 @@ def configDeltaMotor(portNumber):
         mainUI.textBrowser.append("参数配置失败，请重试")
 
 def checkDeltaConfigInfo(portNumber):
-    instrument = initModbusInterface(portNumber)
+    instrument = initModbusInterface(portNumber,0x7f)
     try:
         mainUI.textBrowser.append("开读取参数")
         # P1-01参数
@@ -234,6 +234,19 @@ def searchBaud():
                     mainUI.textBrowser.append(f"波特率为750000")
                     return
     mainUI.textBrowser.append("波特率检测完成")
+
+# we use this function to detect Node ID using RS232 based on modbus protocal.
+def detectModBusID():
+    for id in range(0x7f):
+        try:
+            node = initModbusInterface(PortNumber,id)
+            p3_01 = node.read_register(0x0302)
+            print(f"找到节点：{NodeID}")
+            return
+        except ModbusException:
+            node.serial.close()
+            continue
+
 
 def checkCurrentConfig():
     try:
@@ -395,8 +408,6 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.textBrowser.append(f"------------------------")
         checkDeltaConfigInfo(PortNumber)
         self.textBrowser.append(f"------------------------")
-
-
 
 
     #------------------------------------------------------------------
