@@ -32,7 +32,14 @@ def initModbusInterface(portNumber,nodeID):
 
 #配置根据公司给出的参数表配置台达电机
 def configDeltaMotor(portNumber):
-    instrument = initModbusInterface(portNumber,0x7f)
+    for time in range(50):
+        id = detectModBusID()
+        if id != None:
+            break
+    if id == None:
+        mainUI.textBrowser.append("全局ID检测失败")
+
+    instrument = initModbusInterface(portNumber,NodeID)
     try:
         mainUI.textBrowser.append("开始配置参数")
         # P1-01参数
@@ -78,9 +85,15 @@ def configDeltaMotor(portNumber):
         mainUI.textBrowser.append("参数配置失败，请重试")
 
 def checkDeltaConfigInfo(portNumber):
-    instrument = initModbusInterface(portNumber,0x7f)
+    for time in range(50):
+        id = detectModBusID()
+        if id != None:
+            break
+    if id == None:
+        mainUI.textBrowser.append("全局ID检测失败")
+    instrument = initModbusInterface(portNumber,NodeID)
     try:
-        mainUI.textBrowser.append("开读取参数")
+        mainUI.textBrowser.append("开始读取参数")
         # P1-01参数
         # 标准CANOpen，需要根据提升机现场实际运行方向进行调整，配置值为0x000C或0x010C。向上提升方向为正。
         p1_01 = instrument.read_register(0x0102)
@@ -237,16 +250,32 @@ def searchBaud():
 
 # we use this function to detect Node ID using RS232 based on modbus protocal.
 def detectModBusID():
-    for id in range(0x7f):
+    global NodeID
+    mainUI.textBrowser.append("开始寻找ModbusNodeID")
+    idList = [*range(1,0x7f+1)]
+    mainUI.textBrowser.append("创建ID查找目录")
+    random.shuffle(idList)
+    for id in idList :
         try:
-            node = initModbusInterface(PortNumber,id)
-            p3_01 = node.read_register(0x0302)
-            print(f"找到节点：{id}")
-            return
+            mainUI.textBrowser.append(f"开始尝试id:{id}")
+            # modBus协议基本串口参数配置
+            instrument = minimalmodbus.Instrument(PortNumber, id)  # port name, slave address (in decimal)
+            instrument.serial.baudrate = 38400
+            instrument.serial.bytesize = 8
+            instrument.serial.stopbits = 2
+            instrument.serial.parity = serial.PARITY_NONE
+            instrument.mode = minimalmodbus.MODE_RTU
+            P3_00 = instrument.read_register(0x0302)
+            mainUI.textBrowser.setPlainText(f"找到节点：{id}")
+            mainUI.textBrowser.append(f"开始设置该节点号：{id}为驱动器全局ID")
+            NodeID = id
+            instrument.serial.close()
+            mainUI.textBrowser.append(f"全局ID设置成功,ID为:{NodeID}")
+            return id
         except Exception:
-            node.serial.close()
+            instrument.serial.close()
             continue
-
+    return None
 
 def checkCurrentConfig():
     try:
