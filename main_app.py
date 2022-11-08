@@ -371,6 +371,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             self.SensorDetectcomboBox.setDisabled(False)
             self.BtnBaudDetect.setDisabled(False)
             self.BtnCheckConfigModbus.setDisabled(False)
+            self.BtnNodeIdDetectionModbus.setDisabled(False)
         else:
             self.disableButton()
         PortNumber = self.serialcComboBox.currentText()
@@ -403,6 +404,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.BtnBaudDetect.setDisabled(True)
         self.BtnCheckConfig.setDisabled(True)
         self.BtnCheckConfigModbus.setDisabled(True)
+        self.BtnNodeIdDetectionModbus.setDisabled(True)
 
     def detectBaud(self):
         searchBaud()
