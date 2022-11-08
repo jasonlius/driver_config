@@ -39,7 +39,7 @@ def configDeltaMotor(portNumber):
     if id == None:
         mainUI.textBrowser.append("全局ID检测失败")
 
-    instrument = initModbusInterface(portNumber,NodeID)
+    instrument = initModbusInterface(portNumber,id)
     try:
         mainUI.textBrowser.append("开始配置参数")
         # P1-01参数
@@ -91,7 +91,7 @@ def checkDeltaConfigInfo(portNumber):
             break
     if id == None:
         mainUI.textBrowser.append("全局ID检测失败")
-    instrument = initModbusInterface(portNumber,NodeID)
+    instrument = initModbusInterface(portNumber,id)
     try:
         mainUI.textBrowser.append("开始读取参数")
         # P1-01参数
@@ -250,7 +250,6 @@ def searchBaud():
 
 # we use this function to detect Node ID using RS232 based on modbus protocal.
 def detectModBusID():
-    global NodeID
     mainUI.textBrowser.append("开始寻找ModbusNodeID")
     idList = [*range(1,0x7f+1)]
     mainUI.textBrowser.append("创建ID查找目录")
@@ -267,10 +266,7 @@ def detectModBusID():
             instrument.mode = minimalmodbus.MODE_RTU
             P3_00 = instrument.read_register(0x0302)
             mainUI.textBrowser.setPlainText(f"找到节点：{id}")
-            mainUI.textBrowser.append(f"开始设置该节点号：{id}为驱动器全局ID")
-            NodeID = id
             instrument.serial.close()
-            mainUI.textBrowser.append(f"全局ID设置成功,ID为:{NodeID}")
             return id
         except Exception:
             instrument.serial.close()
