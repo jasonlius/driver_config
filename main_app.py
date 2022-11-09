@@ -85,7 +85,7 @@ def configDeltaMotor(portNumber):
         mainUI.textBrowser.append("参数配置失败，请重试")
 
 def checkDeltaConfigInfo(portNumber):
-    for time in range(50):
+    for time in range(10):
         id = detectModBusID()
         if id != None:
             break
@@ -345,8 +345,10 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         global mainUI
         global Baud
-        Baud = 250000
+        global num_last
         global NodeID
+        Baud = 250000
+        num_last = 0
         NodeID = 0
         super(MyWindow, self).__init__(parent)
         self.setupUi(self)
@@ -444,15 +446,16 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     #------------------------------------------------------------------
     #串口检测区
     def refresh(self):
+        global num_last
         port_list = self.get_port_list()
         num = len(port_list)+1
         # print(num)
-        num_last = self.serialcComboBox.count()
         # print(num_last)
         if (num != num_last):
+            num_last = num
             self.serialcComboBox.clear()
             self.serialcComboBox.addItem('选择串口')
-            self.serialcComboBox.addItems(self.get_port_list())   # 重新设置端口下拉列表
+            self.serialcComboBox.addItem(self.get_port_list()[-1])   # 重新设置端口下拉列表
 
     @staticmethod
     # 获取端口号
