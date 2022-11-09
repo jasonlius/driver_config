@@ -288,6 +288,7 @@ def detectModBusID():
         except Exception:
             instrument.serial.close()
             continue
+    mainUI.textBrowser.append("检测失败！检查是否串口选择错误，或者连线不牢")
     return None
 
 
@@ -462,7 +463,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     def nodeIdDetectionModbus(self):
         self.timer1 = QTimer(self)  # 实例化一个定时器
         self.timer1.timeout.connect(self.refreshWindows)  # 定时器结束后触发refresh
-        self.timer1.start(50)  # 开启定时器，间隔0.05s
+        self.timer1.start(0.1)  # 开启定时器，间隔0.0001s
         self.myThread = NodeIdDetetctThread()
         self.myThread.started.connect(self.disableButton)
         self.myThread.finished.connect(self.enbleIDBtn)
@@ -471,8 +472,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     def disbleIDBtn(self):
         self.BtnNodeIdDetectionModbus.setDisabled(True)
     def enbleIDBtn(self):
-        self.timer1.disconnect() 
-        self.BtnNodeIdDetectionModbus.setDisabled(False) 
+        self.BtnNodeIdDetectionModbus.setDisabled(False)
+        self.timer1.disconnect()  
     def refreshWindows(self): 
         self.cursor = self.textBrowser.textCursor()
         self.textBrowser.moveCursor(self.cursor.End)  
