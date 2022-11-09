@@ -5,12 +5,29 @@ import canopen as canopen
 import minimalmodbus as minimalmodbus
 import serial
 import serial.tools.list_ports
+from PyQt5 import  QtGui
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from mainPage import Ui_MainWindow
-from minimalmodbus import ModbusException
+from PyQt5.QtCore import QThread ,  pyqtSignal,  QDateTime 
 
+#####################################################
+#                    多线程区                        #
+#####################################################
+#为了处理后台时间较长的程序
+class NodeIdDetetctThread(QThread):
+    # 通过类成员对象定义信号对象  
+    started = pyqtSignal()
+    finished = pyqtSignal()
+    # 处理要做的业务逻辑
+    def run(self):
+        self.started.emit()
+        detectModBusID()
+        self.finished.emit()
+
+
+        
 #####################################################
 #                    功能函数区                       #
 #####################################################
@@ -273,6 +290,7 @@ def detectModBusID():
             continue
     return None
 
+
 def checkCurrentConfig():
     try:
         network = initCanInterface(PortNumber, Baud)
@@ -352,6 +370,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         NodeID = 0
         super(MyWindow, self).__init__(parent)
         self.setupUi(self)
+        
         #--------------------------------------------------------------------
         #设置一个串口检测定时器，每隔0.3自动触发refresh方法刷新串口
         self.ser = None  # 串口初始化为None
@@ -438,10 +457,26 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         checkDeltaConfigInfo(PortNumber)
         self.textBrowser.append(f"------------------------")
 
+    #--------------------------------------------------------
+    #创建一个新线程来检测节点id
     def nodeIdDetectionModbus(self):
-        detectModBusID()
-
-
+        self.timer1 = QTimer(self)  # 实例化一个定时器
+        self.timer1.timeout.connect(self.refreshWindows)  # 定时器结束后触发refresh
+        self.timer1.start(50)  # 开启定时器，间隔0.05s
+        self.myThread = NodeIdDetetctThread()
+        self.myThread.started.connect(self.disableButton)
+        self.myThread.finished.connect(self.enbleIDBtn)
+        self.myThread.start()
+         
+    def disbleIDBtn(self):
+        self.BtnNodeIdDetectionModbus.setDisabled(True)
+    def enbleIDBtn(self):
+        self.timer1.disconnect() 
+        self.BtnNodeIdDetectionModbus.setDisabled(False) 
+    def refreshWindows(self): 
+        self.cursor = self.textBrowser.textCursor()
+        self.textBrowser.moveCursor(self.cursor.End)  
+    #----------------------------------------------------------
 
     #------------------------------------------------------------------
     #串口检测区
