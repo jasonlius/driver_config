@@ -27,6 +27,16 @@ class NodeIdDetetctThread(QThread):
         self.finished.emit()
 
 
+class configDeltaMotorThread(QThread):
+    # 通过类成员对象定义信号对象  
+    started = pyqtSignal()
+    finished = pyqtSignal()
+    # 处理要做的业务逻辑
+    def run(self):
+        self.started.emit()
+        configDeltaMotor(PortNumber)
+        self.finished.emit()
+
         
 #####################################################
 #                    功能函数区                       #
@@ -461,22 +471,14 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     #--------------------------------------------------------
     #创建一个新线程来检测节点id
     def nodeIdDetectionModbus(self):
-        self.timer1 = QTimer(self)  # 实例化一个定时器
-        self.timer1.timeout.connect(self.refreshWindows)  # 定时器结束后触发refresh
-        self.timer1.start(0.1)  # 开启定时器，间隔0.0001s
         self.myThread = NodeIdDetetctThread()
-        self.myThread.started.connect(self.disableButton)
+        self.myThread.started.connect(self.disbleIDBtn)
         self.myThread.finished.connect(self.enbleIDBtn)
         self.myThread.start()
-         
     def disbleIDBtn(self):
         self.BtnNodeIdDetectionModbus.setDisabled(True)
     def enbleIDBtn(self):
         self.BtnNodeIdDetectionModbus.setDisabled(False)
-        self.timer1.disconnect()  
-    def refreshWindows(self): 
-        self.cursor = self.textBrowser.textCursor()
-        self.textBrowser.moveCursor(self.cursor.End)  
     #----------------------------------------------------------
 
     #------------------------------------------------------------------
