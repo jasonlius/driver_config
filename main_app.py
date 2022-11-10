@@ -36,7 +36,18 @@ class configDeltaMotorThread(QThread):
         self.started.emit()
         configDeltaMotor(PortNumber)
         self.finished.emit()
-
+class CheckConfigModbusThread(QThread):
+    # 通过类成员对象定义信号对象  
+    started = pyqtSignal()
+    finished = pyqtSignal()
+    # 处理要做的业务逻辑
+    def run(self):
+        self.started.emit()
+        mainUI.textBrowser.append(f"开始检测配置值")
+        mainUI.textBrowser.append(f"------------------------")
+        checkDeltaConfigInfo(PortNumber)
+        mainUI.textBrowser.append(f"------------------------")
+        self.finished.emit()
         
 #####################################################
 #                    功能函数区                       #
@@ -59,7 +70,7 @@ def initModbusInterface(portNumber,nodeID):
 
 #配置根据公司给出的参数表配置台达电机
 def configDeltaMotor(portNumber):
-    for time in range(50):
+    for time in range(5):
         id = detectModBusID()
         if id != None:
             break
@@ -112,7 +123,7 @@ def configDeltaMotor(portNumber):
         mainUI.textBrowser.append("参数配置失败，请重试")
 
 def checkDeltaConfigInfo(portNumber):
-    for time in range(10):
+    for time in range(5):
         id = detectModBusID()
         if id != None:
             break
@@ -443,7 +454,14 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.BtnTestLifter.setDisabled(False)
 
     def configDriver(self):
-        configDeltaMotor(PortNumber)
+        self.configThread = configDeltaMotorThread()
+        self.configThread.started.connect(self.disbleConfigBtn)
+        self.configThread.finished.connect(self.enbleConfigBtn)
+        self.configThread.start()
+    def disbleConfigBtn(self):
+        self.BtnConfig.setDisabled(True)
+    def enbleConfigBtn(self):
+        self.BtnConfig.setDisabled(False)
 
     def testLifter(self):
         testPositionMode(PortNumber)
@@ -461,20 +479,26 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         except Exception:
             mainUI.textBrowser.append("错误，请输入数字")
         print(RotationValue)
-
+     #--------------------------------------------------------
+    #创建一个新线程来查看驱动器配置
     def checkConfigModbus(self):
-        self.textBrowser.append(f"开始检测配置值")
-        self.textBrowser.append(f"------------------------")
-        checkDeltaConfigInfo(PortNumber)
-        self.textBrowser.append(f"------------------------")
+        self.CheckconfigThread = CheckConfigModbusThread()
+        self.CheckconfigThread.started.connect(self.disbleCheckBtn)
+        self.CheckconfigThread.finished.connect(self.enbleCheckBtn)
+        self.CheckconfigThread.start()
+    def disbleCheckBtn(self):
+        self.BtnCheckConfigModbus.setDisabled(True)
+    def enbleCheckBtn(self):
+        self.BtnCheckConfigModbus.setDisabled(False)
+     #----------------------------------------------------------
 
     #--------------------------------------------------------
     #创建一个新线程来检测节点id
     def nodeIdDetectionModbus(self):
-        self.myThread = NodeIdDetetctThread()
-        self.myThread.started.connect(self.disbleIDBtn)
-        self.myThread.finished.connect(self.enbleIDBtn)
-        self.myThread.start()
+        self.idDetetctThread = NodeIdDetetctThread()
+        self.idDetetctThread.started.connect(self.disbleIDBtn)
+        self.idDetetctThread.finished.connect(self.enbleIDBtn)
+        self.idDetetctThread.start()
     def disbleIDBtn(self):
         self.BtnNodeIdDetectionModbus.setDisabled(True)
     def enbleIDBtn(self):
