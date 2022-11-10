@@ -189,8 +189,11 @@ def checkDeltaConfigInfo(portNumber):
         mainUI.textBrowser.append(f"p3-01 = {hex(p3_01)}")
         instrument.serial.close()
         mainUI.textBrowser.append("驱动器读取成功")
+        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
     except Exception:
         mainUI.textBrowser.append("参数读取失败，请重试")
+        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
+
 
 
 
@@ -295,7 +298,6 @@ def detectModBusID():
     for id in idList :
         try:
             mainUI.textBrowser.append(f"开始尝试id:{id}")
-            mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
             # modBus协议基本串口参数配置
             instrument = minimalmodbus.Instrument(PortNumber, id)  # port name, slave address (in decimal)
             instrument.serial.baudrate = 38400
@@ -430,7 +432,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         if self.canopenIdComboBox.currentText() == "1(上升列)":
             NodeID = 0x1
         elif self.canopenIdComboBox.currentText() == "2(下降列)":
-            NodeID = 0x2
+            NodeID = 0x2    
         self.textBrowser.append(f"canopenID为{NodeID}")
 
     def ProtectSensor(self):
