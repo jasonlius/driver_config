@@ -432,13 +432,13 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         if self.canopenIdComboBox.currentText() == "1(上升列)":
             NodeID = 0x1
         elif self.canopenIdComboBox.currentText() == "2(下降列)":
-            NodeID = 0x2    
+            NodeID = 0x2
         self.textBrowser.append(f"canopenID为{NodeID}")
 
     def ProtectSensor(self):
         global SensorValue
         self.BtnConfig.setDisabled(False)
-        if self.SensorDetectcomboBox.currentText() == "加保护":
+        if self.SensorDetectcomboBox.currentText() == "需要":
             SensorValue = 0x21
         else:
             SensorValue = 0x0

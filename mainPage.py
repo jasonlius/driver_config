@@ -184,7 +184,6 @@ class Ui_MainWindow(object):
         self.lineEdit.textChanged['QString'].connect(MainWindow.inputRotationValue) # type: ignore
         self.BtnCheckConfig.clicked.connect(MainWindow.checkConfig) # type: ignore
         self.BtnCheckConfigModbus.clicked.connect(MainWindow.checkConfigModbus) # type: ignore
-        self.BtnNodeIdDetectionModbus.clicked.connect(MainWindow.nodeIdDetectionModbus) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -194,19 +193,19 @@ class Ui_MainWindow(object):
         self.groupBox_2.setTitle(_translate("MainWindow", "串口设置区："))
         self.label_2.setText(_translate("MainWindow", "选串口"))
         self.groupBox_4.setTitle(_translate("MainWindow", "CanOpen操作区："))
-        self.BtnCheckConfig.setText(_translate("MainWindow", "查看当前驱动器配置"))
+        self.BtnCheckConfig.setText(_translate("MainWindow", "读取当前驱动器配置"))
         self.label_7.setText(_translate("MainWindow", "旋转量输入:"))
         self.BtnTestLifter.setText(_translate("MainWindow", "启动提升机测试"))
         self.BtnBaudDetect.setText(_translate("MainWindow", "波特率与nodeID检测"))
-        self.groupBox_3.setTitle(_translate("MainWindow", "驱动器配置区："))
-        self.BtnCheckConfigModbus.setText(_translate("MainWindow", "查看当前驱动器配置（MODBUS）"))
-        self.label_5.setText(_translate("MainWindow", "CanopenID"))
-        self.canopenIdComboBox.setItemText(0, _translate("MainWindow", "选择ID"))
+        self.groupBox_3.setTitle(_translate("MainWindow", "驱动器配置区（使用Modbus）："))
+        self.BtnCheckConfigModbus.setText(_translate("MainWindow", "读取当前驱动器配置（MODBUS）"))
+        self.label_5.setText(_translate("MainWindow", "选择设备"))
+        self.canopenIdComboBox.setItemText(0, _translate("MainWindow", "设备"))
         self.canopenIdComboBox.setItemText(1, _translate("MainWindow", "1(上升列)"))
         self.canopenIdComboBox.setItemText(2, _translate("MainWindow", "2(下降列)"))
-        self.label_6.setText(_translate("MainWindow", "保护传感器"))
-        self.SensorDetectcomboBox.setItemText(0, _translate("MainWindow", "加保护"))
-        self.SensorDetectcomboBox.setItemText(1, _translate("MainWindow", "不加保护"))
+        self.label_6.setText(_translate("MainWindow", "防夹车传感器"))
+        self.SensorDetectcomboBox.setItemText(0, _translate("MainWindow", "需要"))
+        self.SensorDetectcomboBox.setItemText(1, _translate("MainWindow", "不需要"))
         self.BtnConfig.setText(_translate("MainWindow", "配置"))
         self.BtnNodeIdDetectionModbus.setText(_translate("MainWindow", "NodeID检测(MODBUS)"))
 

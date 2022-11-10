@@ -147,7 +147,7 @@
           </font>
          </property>
          <property name="text">
-          <string>查看当前驱动器配置</string>
+          <string>读取当前驱动器配置</string>
          </property>
         </widget>
        </item>
@@ -214,7 +214,7 @@
        </font>
       </property>
       <property name="title">
-       <string>驱动器配置区：</string>
+       <string>驱动器配置区（使用Modbus）：</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
@@ -225,7 +225,7 @@
           </font>
          </property>
          <property name="text">
-          <string>查看当前驱动器配置（MODBUS）</string>
+          <string>读取当前驱动器配置（MODBUS）</string>
          </property>
         </widget>
        </item>
@@ -237,7 +237,7 @@
           </font>
          </property>
          <property name="text">
-          <string>CanopenID</string>
+          <string>选择设备</string>
          </property>
         </widget>
        </item>
@@ -245,7 +245,7 @@
         <widget class="QComboBox" name="canopenIdComboBox">
          <item>
           <property name="text">
-           <string>选择ID</string>
+           <string>设备</string>
           </property>
          </item>
          <item>
@@ -281,7 +281,7 @@
           </font>
          </property>
          <property name="text">
-          <string>保护传感器</string>
+          <string>防夹车传感器</string>
          </property>
         </widget>
        </item>
@@ -289,12 +289,12 @@
         <widget class="QComboBox" name="SensorDetectcomboBox">
          <item>
           <property name="text">
-           <string>加保护</string>
+           <string>需要</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>不加保护</string>
+           <string>不需要</string>
           </property>
          </item>
         </widget>
@@ -504,22 +504,6 @@
     <hint type="destinationlabel">
      <x>729</x>
      <y>681</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>BtnNodeIdDetectionModbus</sender>
-   <signal>clicked()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>nodeIdDetectionModbus()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>548</x>
-     <y>747</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>676</x>
-     <y>782</y>
     </hint>
    </hints>
   </connection>
