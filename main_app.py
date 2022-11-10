@@ -295,6 +295,7 @@ def detectModBusID():
     for id in idList :
         try:
             mainUI.textBrowser.append(f"开始尝试id:{id}")
+            mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
             # modBus协议基本串口参数配置
             instrument = minimalmodbus.Instrument(PortNumber, id)  # port name, slave address (in decimal)
             instrument.serial.baudrate = 38400
@@ -303,7 +304,8 @@ def detectModBusID():
             instrument.serial.parity = serial.PARITY_NONE
             instrument.mode = minimalmodbus.MODE_RTU
             P3_00 = instrument.read_register(0x0302)
-            mainUI.textBrowser.setPlainText(f"找到节点：{id}")
+            mainUI.textBrowser.append(f"找到节点：{id}")
+            mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
             instrument.serial.close()
             return id
         except Exception:

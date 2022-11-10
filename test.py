@@ -11,7 +11,7 @@ class BackendThread(QThread):
             data = QDateTime.currentDateTime()
             currTime = data.toString("yyyy-MM-dd hh:mm:ss")
             self.update_date.emit( str(currTime) )
-            time.sleep(1)
+    time.sleep(1)
 class Window(QDialog):
     def __init__(self):
         QDialog.__init__(self)
