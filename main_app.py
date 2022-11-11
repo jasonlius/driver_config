@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QMainWindow, QApplication
 from mainPage import Ui_MainWindow
 from PyQt5.QtCore import QThread ,  pyqtSignal,  QDateTime
 import traceback
+from PyQt5.QtWidgets import QMessageBox
 
 #####################################################
 #                    多线程区                        #
@@ -34,9 +35,8 @@ class configDeltaMotorThread(QThread):
     finished = pyqtSignal()
     # 处理要做的业务逻辑
     def run(self):
-        port = MyWindow.get_port_list()[-1]
         self.started.emit()
-        configDeltaMotor(port)
+        configDeltaMotor(PortNumber)
         self.finished.emit()
 class CheckConfigModbusThread(QThread):
     # 通过类成员对象定义信号对象  
@@ -78,6 +78,12 @@ class CheckLifterConfigThread(QThread):
 #####################################################
 #                    功能函数区                       #
 #####################################################
+
+# 获取端口号
+def get_port_list():
+    # 用于保存端口名的列表
+    port_list = serial.tools.list_ports.comports()  # 获取本机端口，返回list
+    return port_list  # 返回列表
 
 def initModbusInterface(portNumber,nodeID):
     try:
@@ -523,54 +529,37 @@ class MyWindow(QMainWindow,Ui_MainWindow):
     def __init__(self, parent=None):
         global mainUI
         global Baud
-        global num_last
         global NodeID
         Baud = 250000
-        num_last = 0
         NodeID = 0
         super(MyWindow, self).__init__(parent)
         self.setupUi(self)
-        
-        
-        #--------------------------------------------------------------------
-        #设置一个串口检测定时器，每隔0.3自动触发refresh方法刷新串口
-        self.ser = None  # 串口初始化为None
+        self.setFont(QFont('Helvetica Neue'))
+        mainUI = self
+        # --------------------------------------------------------------------
+        # 设置一个串口检测定时器，每隔0.3自动触发refresh方法刷新串口
         self.timer = QTimer(self)  # 实例化一个定时器
         self.timer.timeout.connect(self.refresh)  # 定时器结束后触发refresh
         self.timer.start(300)  # 开启定时器，间隔0.3s
-        # --------------------------------------------------------------------
-        self.setFont(QFont('Helvetica Neue'))
+    # --------------------------------------------------------------------
         self.disableButton()
-        mainUI = self
 
     #####################################################
     #                    UI按钮函数区                     #
     #####################################################
-    def changePort(self):    
-            global PortNumber
-            if(self.serialcComboBox.currentText() != "选择串口"):
-                self.canopenIdComboBox.setDisabled(False)
-                self.SensorDetectcomboBox.setDisabled(False)
-                self.BtnBaudDetect.setDisabled(False)
-                self.BtnCheckConfigModbus.setDisabled(False)
-                self.BtnNodeIdDetectionModbus.setDisabled(False)
-                self.BtnConfigLifter.setDisabled(False)
-                self.BtnCheckLifterConfig.setDisabled(False)
-                
-            else:
-                self.disableButton()
-            PortNumber = self.serialcComboBox.currentText()
-            self.textBrowser.setPlainText(f"切换到串口 {PortNumber}")
 
     def changenodeId(self):
         global NodeID
         self.BtnTestLifter.setDisabled(False)
-        self.BtnCheckConfig.setDisabled(False)
+        self.SensorDetectcomboBox.setDisabled(False)
         self.lineEdit.setDisabled(True)
         if self.canopenIdComboBox.currentText() == "1(上升列)":
             NodeID = 0x1
         elif self.canopenIdComboBox.currentText() == "2(下降列)":
             NodeID = 0x2
+        else:
+            QMessageBox.warning(self,"警告","请选择设备")
+            self.SensorDetectcomboBox.setDisabled(True)
         self.textBrowser.append(f"canopenID为{NodeID}")
 
     def ProtectSensor(self):
@@ -578,20 +567,19 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.BtnConfig.setDisabled(False)
         if self.SensorDetectcomboBox.currentText() == "需要":
             SensorValue = 0x21
-        else:
+        elif self.SensorDetectcomboBox.currentText() == "不需要":
             SensorValue = 0x0
+        else:
+            QMessageBox.warning(self,"警告","请点击需要或者不需要")
+            self.textBrowser.clear()
+            self.BtnConfig.setDisabled(True)
         self.textBrowser.append(f"传感器参数配置值为{SensorValue}")
     def disableButton(self):
-        self.canopenIdComboBox.setDisabled(True)
         self.SensorDetectcomboBox.setDisabled(True)
         self.BtnConfig.setDisabled(True)
         self.BtnTestLifter.setDisabled(True)
         self.BtnBaudDetect.setDisabled(True)
         self.BtnCheckConfig.setDisabled(True)
-        self.BtnCheckConfigModbus.setDisabled(True)
-        self.BtnNodeIdDetectionModbus.setDisabled(True)
-        self.BtnConfigLifter.setDisabled(True)
-        self.BtnCheckLifterConfig.setDisabled(True)
 
     def detectBaud(self):
         searchBaud()
@@ -676,38 +664,48 @@ class MyWindow(QMainWindow,Ui_MainWindow):
     def enableCheckLifterconfigBtn(self):
         self.BtnCheckLifterConfig.setDisabled(False)
 
-    # ----------------------------------------------------------
 
-    #------------------------------------------------------------------
-    #串口检测区
     def refresh(self):
         global num_last
-        port_list = self.get_port_list()
-        num = len(port_list)+1
-        # print(num)
-        # print(num_last)
-        if (num != num_last):
+        global PortNumber
+        port_list = get_port_list()
+        num = len(port_list)
+        if (num < num_last):
             num_last = num
-            self.serialcComboBox.clear()
-            self.serialcComboBox.addItem('选择串口')
-            self.serialcComboBox.addItem(self.get_port_list()[-1])   # 重新设置端口下拉列表
+            QMessageBox.information(self, "提示", "检测到USB调试线被拔出，请确认当前调试线是否正确")
+            PortNumber = port_list[-1][0]
+            self.textBrowser.setPlainText(f"自动设置当前调试串口为为{PortNumber},请确认当前调试线！")
+        if (num > num_last):
+            num_last = num
+            QMessageBox.information(self, "提示", "检测到有有新的USB调试线插入")
+            PortNumber = port_list[-1][0]
+            self.textBrowser.setPlainText(f"已检测到调试线，调试线为{PortNumber},请开始配置吧！")
 
-    @staticmethod
-    # 获取端口号
-    def get_port_list():
-        """
-        获取当前系统所有COM口
-        :return:
-        """
-        com_list = []  # 用于保存端口名的列表
-        port_list = serial.tools.list_ports.comports()  # 获取本机端口，返回list
-        for port in port_list:
-            com_list.append(port[0])  # 保存端口到列表
-        return com_list  # 返回列表
-    # ------------------------------------------------------------------
+    # ----------------------------------------------------------
+
+
 
 if __name__ == "__main__":
+    global PortNumber
+    global num_last
+    portList = get_port_list()
+    num_last = len(portList)
     app = QApplication(sys.argv)
     myWin = MyWindow()
     myWin.show()
+    #获取该串口的厂商参数
+    port = portList[-1][1]
+    if ("usb" not in port.lower() and "can" not in port.lower()) or num_last == 0 :
+        BtnInfo = QMessageBox.information(myWin, "提示", "请先插入调试线,开启测试")
+        if BtnInfo == 1024:
+            portList = get_port_list()
+            num_last = len(portList)
+            PortNumber = portList[-1][0]  # 获取该串口的串口名
+            myWin.textBrowser.append(f"已检测到调试线，调试线为{PortNumber},请开始配置吧！")
+
+    else:
+        PortNumber = portList[-1][0] #获取该串口的串口名
+        myWin.textBrowser.append(f"已检测到调试线，调试线为{PortNumber},请开始配置吧！")
     sys.exit(app.exec_())
+
+

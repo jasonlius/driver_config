@@ -103,6 +103,11 @@
         <widget class="QComboBox" name="SensorDetectcomboBox">
          <item>
           <property name="text">
+           <string>请选择</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>需要</string>
           </property>
          </item>
@@ -153,83 +158,6 @@
           </widget>
          </item>
         </layout>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QGroupBox" name="groupBox_2">
-      <property name="minimumSize">
-       <size>
-        <width>100</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>17</pointsize>
-       </font>
-      </property>
-      <property name="title">
-       <string>串口设置区：</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <spacer name="horizontalSpacer_6">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="label_2">
-           <property name="font">
-            <font>
-             <pointsize>17</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>选串口</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="serialcComboBox">
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>0</height>
-            </size>
-           </property>
-           <item>
-            <property name="text">
-             <string/>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>339</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
@@ -399,11 +327,6 @@
      </widget>
     </item>
    </layout>
-   <zorder>groupBox_3</zorder>
-   <zorder>groupBox_2</zorder>
-   <zorder>groupBox_4</zorder>
-   <zorder>groupBox</zorder>
-   <zorder>groupBox_5</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -419,22 +342,6 @@
  </widget>
  <resources/>
  <connections>
-  <connection>
-   <sender>serialcComboBox</sender>
-   <signal>activated(QString)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>changePort()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>365</x>
-     <y>611</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>304</x>
-     <y>551</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>canopenIdComboBox</sender>
    <signal>activated(QString)</signal>
