@@ -112,13 +112,13 @@ def configLifter(portNumber):
         # P3-09参数 CANOpen同步设定
         instrument.write_register(0x0312, 0x5055, 0, 6)
         readDeltaConfig(instrument)
-        mainUI.textBrowser.append("驱动器参数配置成功")
-        mainUI.textBrowser.append("请重新启动驱动器使配置生效")
-        instrument.serial.close()
-        mainUI.textBrowser.append("请重新启动驱动器使配置生效")
-    except Exception:
-        mainUI.textBrowser.append("参数配置失败，请重试")
-        mainUI.textBrowser.append("请检查是否有选择设备")
+        mainUI.textBrowser.append("————————————————————————————")
+        mainUI.textBrowser.append("配置成功！参数配置显示如下")
+        time.sleep(1)
+        readDeltaConfig(instrument)
+        mainUI.textBrowser.append("成功！请重新启动驱动器使配置生效")
+        mainUI.textBrowser.append("————————————————————————————")
+        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
 
 
 
@@ -171,12 +171,15 @@ def configDeltaMotor(portNumber):
         instrument.write_register(0x0300, NodeID, 0, 6)
         # P3-01参数 备注CANOpen 波特率CAN bus 250 Kbps
         instrument.write_register(0x0302, 0x0103, 0, 6)
-        instrument.serial.close()
+        mainUI.textBrowser.append("————————————————————————————")
+        mainUI.textBrowser.append("配置成功！参数配置显示如下")
         time.sleep(1)
-        instrumentRead = initModbusInterface(portNumber,id)
-        readDeltaConfig(instrumentRead)
-        mainUI.textBrowser.append("驱动器参数配置成功")
-        mainUI.textBrowser.append("请重新启动驱动器使配置生效")
+        readDeltaConfig(instrument)
+        mainUI.textBrowser.append("成功！请重新启动驱动器使配置生效")
+        mainUI.textBrowser.append("————————————————————————————")
+        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
+
+
 
     except Exception as e:
         mainUI.textBrowser.append("参数配置失败，请重试")
@@ -195,7 +198,7 @@ def checkDeltaConfigInfo(portNumber):
 
 def readDeltaConfig(instrument):
     try:
-        mainUI.textBrowser.append("开始读取参数")
+        mainUI.textBrowser.append("读取当前驱动器读取参数中")
         # P1-01参数
         # 标准CANOpen，需要根据提升机现场实际运行方向进行调整，配置值为0x000C或0x010C。向上提升方向为正。
         p1_01 = instrument.read_register(0x0102)
@@ -252,7 +255,6 @@ def readDeltaConfig(instrument):
         p3_01 = instrument.read_register(0x0302)
         mainUI.textBrowser.append(f"p3-01 = {hex(p3_01)}")
         instrument.serial.close()
-        mainUI.textBrowser.append("驱动器读取成功")
         mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
     except Exception:
         mainUI.textBrowser.append("参数读取失败，请重试,请排查串口是否错误！")
