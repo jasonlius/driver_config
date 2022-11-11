@@ -6,12 +6,12 @@ import minimalmodbus as minimalmodbus
 import serial
 import serial.tools.list_ports
 from PyQt5 import  QtGui
+from PyQt5 import  QtWidgets
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from mainPage import Ui_MainWindow
-from PyQt5.QtCore import QThread ,  pyqtSignal,  QDateTime 
-
+from PyQt5.QtCore import QThread ,  pyqtSignal,  QDateTime
 #####################################################
 #                    多线程区                        #
 #####################################################
@@ -68,9 +68,62 @@ def initModbusInterface(portNumber,nodeID):
         mainUI.textBrowser.append("初始化串口失败，请检查连线是否已经插牢，或者串口是否选择错误")
 
 
-#配置根据公司给出的参数表配置台达电机
+
+#配置根据公司给出的参数表配置举升机
+def configLifter(portNumber):
+    for time in range(3):
+        id = detectModBusID()
+        if id != None:
+            break
+    if id == None:
+        mainUI.textBrowser.append("全局ID检测失败")
+    instrument = initModbusInterface(portNumber,id)
+    try:
+        mainUI.textBrowser.append("开始配置参数")
+        # P1-01参数
+        # 配置标准CANOpen通讯模式以及电机的转动方向。
+        instrument.write_register(0x0102, 0x00c, 0, 6)
+        # P1-52参数设置回生电阻值
+        instrument.write_register(0x0168,0x40, 0, 6)
+        # P1-53参数设置回生电阻容量
+        instrument.write_register(0x016A, 0x40, 0, 6)
+        # P2-10参数 备注DI1
+        instrument.write_register(0x0214, 0x0, 0, 6)
+        # P2-11参数 备注DI2
+        instrument.write_register(0x0216, 0x0, 0, 6)
+        # P2-12参数 备注DI3
+        instrument.write_register(0x0218, 0x0, 0, 6)
+        # P2-13参数 备注DI4
+        instrument.write_register(0x021A, 0x0, 0, 6)
+        # P2-14参数 备注DI5
+        instrument.write_register(0x021C, 0x0, 0, 6)
+        # P2-15参数 备注DI6
+        instrument.write_register(0x021E, 0x0, 0, 6)
+        # P2-16参数 备注DI7
+        instrument.write_register(0x0220, 0x0, 0, 6)
+        # P2-17参数 备注DI8
+        instrument.write_register(0x0222, 0x0, 0, 6)
+        # P3-00参数 备注举升机CANOpen node ID为1
+        instrument.write_register(0x0300, 0x1, 0, 6)
+        # P3-01参数 备注CANOpen 波特率CAN bus 1Mbps
+        instrument.write_register(0x0302, 0x0403, 0, 6)
+        # P3-09参数 CANOpen同步设定
+        instrument.write_register(0x0312, 0x5055, 0, 6)
+
+        readDeltaConfig(instrument)
+        instrument.serial.close()
+        mainUI.textBrowser.append("驱动器参数配置成功")
+        mainUI.textBrowser.append("请重新启动驱动器使配置生效")
+
+    except Exception:
+        mainUI.textBrowser.append("参数配置失败，请重试")
+        mainUI.textBrowser.append("请检查是否有选择设备")
+
+
+
+#配置根据公司给出的参数表配置提升机
 def configDeltaMotor(portNumber):
-    for time in range(5):
+    for time in range(3):
         id = detectModBusID()
         if id != None:
             break
@@ -117,19 +170,26 @@ def configDeltaMotor(portNumber):
         instrument.write_register(0x0300, NodeID, 0, 6)
         # P3-01参数 备注CANOpen 波特率CAN bus 250 Kbps
         instrument.write_register(0x0302, 0x0103, 0, 6)
+        readDeltaConfig(instrument)
         instrument.serial.close()
         mainUI.textBrowser.append("驱动器参数配置成功")
+        mainUI.textBrowser.append("请重新启动驱动器使配置生效")
+
     except Exception:
         mainUI.textBrowser.append("参数配置失败，请重试")
+        mainUI.textBrowser.append("请检查是否有选择设备")
 
 def checkDeltaConfigInfo(portNumber):
-    for time in range(5):
+    for time in range(3):
         id = detectModBusID()
         if id != None:
             break
     if id == None:
         mainUI.textBrowser.append("全局ID检测失败")
     instrument = initModbusInterface(portNumber,id)
+    readDeltaConfig(instrument)
+
+def readDeltaConfig(instrument):
     try:
         mainUI.textBrowser.append("开始读取参数")
         # P1-01参数
@@ -191,7 +251,7 @@ def checkDeltaConfigInfo(portNumber):
         mainUI.textBrowser.append("驱动器读取成功")
         mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
     except Exception:
-        mainUI.textBrowser.append("参数读取失败，请重试")
+        mainUI.textBrowser.append("参数读取失败，请重试,请排查串口是否错误！")
         mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
 
 
@@ -293,11 +353,11 @@ def searchBaud():
 def detectModBusID():
     mainUI.textBrowser.append("开始寻找ModbusNodeID")
     idList = [*range(1,0x7f+1)]
-    mainUI.textBrowser.append("创建ID查找目录")
+    mainUI.textBrowser.append("请耐心等待")
     random.shuffle(idList)
     for id in idList :
         try:
-            mainUI.textBrowser.append(f"开始尝试id:{id}")
+            # mainUI.textBrowser.append(f"开始尝试id:{id}")
             # modBus协议基本串口参数配置
             instrument = minimalmodbus.Instrument(PortNumber, id)  # port name, slave address (in decimal)
             instrument.serial.baudrate = 38400
@@ -385,7 +445,7 @@ def checkCurrentConfig():
 #####################################################
 #                    创建主界面                       #
 #####################################################
-class MyWindow(QMainWindow, Ui_MainWindow):
+class MyWindow(QMainWindow,Ui_MainWindow):
     def __init__(self, parent=None):
         global mainUI
         global Baud
@@ -396,6 +456,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         NodeID = 0
         super(MyWindow, self).__init__(parent)
         self.setupUi(self)
+        
         
         #--------------------------------------------------------------------
         #设置一个串口检测定时器，每隔0.3自动触发refresh方法刷新串口
@@ -411,18 +472,21 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     #####################################################
     #                    UI按钮函数区                     #
     #####################################################
-    def changePort(self):
-        global PortNumber
-        if(self.serialcComboBox.currentText() != "选择串口"):
-            self.canopenIdComboBox.setDisabled(False)
-            self.SensorDetectcomboBox.setDisabled(False)
-            self.BtnBaudDetect.setDisabled(False)
-            self.BtnCheckConfigModbus.setDisabled(False)
-            self.BtnNodeIdDetectionModbus.setDisabled(False)
-        else:
-            self.disableButton()
-        PortNumber = self.serialcComboBox.currentText()
-        self.textBrowser.setPlainText(f"切换到串口 {PortNumber}")
+    def changePort(self):    
+            global PortNumber
+            if(self.serialcComboBox.currentText() != "选择串口"):
+                self.canopenIdComboBox.setDisabled(False)
+                self.SensorDetectcomboBox.setDisabled(False)
+                self.BtnBaudDetect.setDisabled(False)
+                self.BtnCheckConfigModbus.setDisabled(False)
+                self.BtnNodeIdDetectionModbus.setDisabled(False)
+                self.BtnConfigLifter.setDisabled(False)
+                self.BtnCheckLifterConfig.setDisabled(False)
+                
+            else:
+                self.disableButton()
+            PortNumber = self.serialcComboBox.currentText()
+            self.textBrowser.setPlainText(f"切换到串口 {PortNumber}")
 
     def changenodeId(self):
         global NodeID
@@ -452,6 +516,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.BtnCheckConfig.setDisabled(True)
         self.BtnCheckConfigModbus.setDisabled(True)
         self.BtnNodeIdDetectionModbus.setDisabled(True)
+        self.BtnConfigLifter.setDisabled(True)
+        self.BtnCheckLifterConfig.setDisabled(True)
 
     def detectBaud(self):
         searchBaud()
@@ -508,6 +574,33 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     def enbleIDBtn(self):
         self.BtnNodeIdDetectionModbus.setDisabled(False)
     #----------------------------------------------------------
+
+    # --------------------------------------------------------
+    # 创建一个新线程来配置提升机
+    def configLifter(self):
+        self.textBrowser.append("按钮点击")
+        configLifter(PortNumber)
+
+    def disbleIDBtn(self):
+        self.BtnNodeIdDetectionModbus.setDisabled(True)
+
+    def enbleIDBtn(self):
+        self.BtnNodeIdDetectionModbus.setDisabled(False)
+    # ----------------------------------------------------------
+
+    # --------------------------------------------------------
+    # 创建一个新线程来读取提升机配置
+    def readLifterConfig(self):
+        self.textBrowser.append("按钮点击")
+
+
+    def disbleIDBtn(self):
+        self.BtnNodeIdDetectionModbus.setDisabled(True)
+
+    def enbleIDBtn(self):
+        self.BtnNodeIdDetectionModbus.setDisabled(False)
+
+    # ----------------------------------------------------------
 
     #------------------------------------------------------------------
     #串口检测区
