@@ -212,6 +212,7 @@ class Ui_MainWindow(object):
         self.BtnCheckConfigModbus.clicked.connect(MainWindow.checkConfigModbus) # type: ignore
         self.BtnCheckLifterConfig.clicked.connect(MainWindow.readLifterConfig) # type: ignore
         self.BtnConfigLifter.clicked.connect(MainWindow.configLifter) # type: ignore
+        self.BtnNodeIdDetectionModbus.clicked.connect(MainWindow.nodeIdDetectionModbus) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

@@ -131,8 +131,8 @@ def configLifter(portNumber):
         # P3-01参数 备注CANOpen 波特率CAN bus 1Mbps
         instrument.write_register(0x0302, 0x0403, 0, 6)
         # P3-09参数 CANOpen同步设定
+        time.sleep(1)
         instrument.write_register(0x0312, 0x5055, 0, 6)
-        readDeltaConfig(instrument)
         mainUI.textBrowser.append("————————————————————————————")
         mainUI.textBrowser.append("配置成功！参数配置显示如下")
         time.sleep(1)
@@ -649,10 +649,10 @@ class MyWindow(QMainWindow,Ui_MainWindow):
     # --------------------------------------------------------
     # 创建一个新线程来配置举升机
     def configLifter(self):
-        self.configLifter = configLifterThread()
-        self.configLifter.started.connect(self.disableConfigLifterBtn)
-        self.configLifter.finished.connect(self.enableConfigLifterBtn)
-        self.configLifter.start()
+        self.configLifterTh = configLifterThread()
+        self.configLifterTh.started.connect(self.disableConfigLifterBtn)
+        self.configLifterTh.finished.connect(self.enableConfigLifterBtn)
+        self.configLifterTh.start()
     def disableConfigLifterBtn(self):
         self.BtnConfigLifter.setDisabled(True)
     def enableConfigLifterBtn(self):
