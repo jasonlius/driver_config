@@ -28,7 +28,6 @@ class NodeIdDetetctThread(QThread):
         detectModBusID()
         self.finished.emit()
 
-
 class configDeltaMotorThread(QThread):
     # 通过类成员对象定义信号对象  
     started = pyqtSignal()
@@ -48,6 +47,28 @@ class CheckConfigModbusThread(QThread):
         mainUI.textBrowser.append(f"开始检测配置值")
         mainUI.textBrowser.append(f"------------------------")
         checkDeltaConfigInfo(PortNumber)
+        mainUI.textBrowser.append(f"------------------------")
+        self.finished.emit()
+class configLifterThread(QThread):
+    # 通过类成员对象定义信号对象  
+    started = pyqtSignal()
+    finished = pyqtSignal()
+    # 处理要做的业务逻辑
+    def run(self):
+        self.started.emit()
+        configLifter(PortNumber)
+        self.finished.emit()
+
+class CheckLifterConfigThread(QThread):
+    # 通过类成员对象定义信号对象  
+    started = pyqtSignal()
+    finished = pyqtSignal()
+    # 处理要做的业务逻辑
+    def run(self):
+        self.started.emit()
+        mainUI.textBrowser.append(f"开始检测配置值")
+        mainUI.textBrowser.append(f"------------------------")
+        checkLifterConfigInfo(PortNumber)
         mainUI.textBrowser.append(f"------------------------")
         self.finished.emit()
         
@@ -115,14 +136,17 @@ def configLifter(portNumber):
         mainUI.textBrowser.append("————————————————————————————")
         mainUI.textBrowser.append("配置成功！参数配置显示如下")
         time.sleep(1)
-        readDeltaConfig(instrument)
+        readLifterConfig(instrument)
         mainUI.textBrowser.append("成功！请重新启动驱动器使配置生效")
         mainUI.textBrowser.append("————————————————————————————")
         mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
-
-
+    except Exception as e:
+        mainUI.textBrowser.append("参数配置失败，请重试")
+        mainUI.textBrowser.append("请检查是否有选择设备")
+        traceback.print_exc()
 
 #配置根据公司给出的参数表配置提升机
+#传入参数为
 def configDeltaMotor(portNumber):
     for i in range(3):
         id = detectModBusID()
@@ -179,8 +203,6 @@ def configDeltaMotor(portNumber):
         mainUI.textBrowser.append("————————————————————————————")
         mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
 
-
-
     except Exception as e:
         mainUI.textBrowser.append("参数配置失败，请重试")
         mainUI.textBrowser.append("请检查是否有选择设备")
@@ -198,7 +220,7 @@ def checkDeltaConfigInfo(portNumber):
 
 def readDeltaConfig(instrument):
     try:
-        mainUI.textBrowser.append("读取当前驱动器读取参数中")
+        mainUI.textBrowser.append("当前提升机读取参数中")
         # P1-01参数
         # 标准CANOpen，需要根据提升机现场实际运行方向进行调整，配置值为0x000C或0x010C。向上提升方向为正。
         p1_01 = instrument.read_register(0x0102)
@@ -209,30 +231,8 @@ def readDeltaConfig(instrument):
         # P1-43参数 刹车关闭延时，单位ms
         p1_43 = instrument.read_register(0x0156)
         mainUI.textBrowser.append(f"p1-43 = {hex(p1_43)}")
-        # P2-10参数 备注DI1
-        p2_10 = instrument.read_register(0x0214)
-        mainUI.textBrowser.append(f"p2-10 = {hex(p2_10)}")
-        # P2-11参数 备注DI2
-        p2_11 = instrument.read_register(0x0216)
-        mainUI.textBrowser.append(f"p2-11 = {hex(p2_11)}")
-        # P2-12参数 备注DI3
-        p2_12 =instrument.read_register(0x0218)
-        mainUI.textBrowser.append(f"p2-12 = {hex(p2_12)}")
-        # P2-13参数 备注DI4
-        p2_13 =instrument.read_register(0x021A)
-        mainUI.textBrowser.append(f"p2-13 = {hex(p2_13)}")
-        # P2-14参数 备注DI5
-        p2_14 = instrument.read_register(0x021C)
-        mainUI.textBrowser.append(f"p2-14 = {hex(p2_14)}")
-        # P2-15参数 备注DI6
-        p2_15 = instrument.read_register(0x021E)
-        mainUI.textBrowser.append(f"p2-15 = {hex(p2_15)}")
-        # P2-16参数 备注DI7
-        p2_16 = instrument.read_register(0x0220)
-        mainUI.textBrowser.append(f"p2-16 = {hex(p2_16)}")
-        # P2-17参数 备注DI8只用于加保护传感器 默认值0x21，测试值0
-        p2_17 = instrument.read_register(0x0222)
-        mainUI.textBrowser.append(f"p2-17 = {hex(p2_17)}")
+        #读取提升机p2-10～p2-17参数
+        readP2_10toP2_17Argu(instrument)
         # P2-18参数 备注Do1
         p2_18 = instrument.read_register(0x0224)
         mainUI.textBrowser.append(f"p2-18 = {hex(p2_18)}")
@@ -260,7 +260,72 @@ def readDeltaConfig(instrument):
         mainUI.textBrowser.append("参数读取失败，请重试,请排查串口是否错误！")
         mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
 
+def checkLifterConfigInfo(portNumber):
+    for i in range(3):
+        id = detectModBusID()
+        if id != None:
+            break
+    if id == None:
+        mainUI.textBrowser.append("全局ID检测失败")
+    instrument = initModbusInterface(portNumber,id)
+    readLifterConfig(instrument)
 
+def readLifterConfig(instrument):
+    try:
+        mainUI.textBrowser.append("当前举升机读取参数中")
+        # P1-01参数
+        # 标准CANOpen，需要根据提升机现场实际运行方向进行调整，配置值为0x000C或0x010C。向上提升方向为正。
+        p1_01 = instrument.read_register(0x0102)
+        mainUI.textBrowser.append(f"p1-01 = {hex(p1_01)}")
+        # P1-52参数设置回生电阻值
+        p1_52 =  instrument.write_register(0x0168)
+        mainUI.textBrowser.append(f"p1-42 = {hex(p1_52)}")
+        # P1-53参数设置回生电阻容量
+        p1_53 =instrument.write_register(0x016A)
+        mainUI.textBrowser.append(f"p1-43 = {hex(p1_53)}")
+        #读取提升机p2-10～p2-17参数
+        readP2_10toP2_17Argu(instrument)
+        # P3-00参数 提升机的设备ID
+        p3_00 = instrument.read_register(0x0300)
+        mainUI.textBrowser.append(f"p3-00 = {hex(p3_00)}")
+        # P3-01参数 提升机的波特率
+        p3_01 = instrument.read_register(0x0302)
+        mainUI.textBrowser.append(f"p3-01 = {hex(p3_01)}")
+        # P3-09参数 同步设置
+        p3_09 = instrument.write_register(0x0312)
+        mainUI.textBrowser.append(f"p3-09 = {hex(p3_09)}")
+        instrument.serial.close()
+        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
+    except Exception:
+        mainUI.textBrowser.append("参数读取失败，请重试,请排查串口是否错误！")
+        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
+
+#该函数用于读取提升机p2-10～p2-17参数
+def readP2_10toP2_17Argu(instrument):
+        # P2-10参数 备注DI1
+        p2_10 = instrument.read_register(0x0214)
+        mainUI.textBrowser.append(f"p2-10 = {hex(p2_10)}")
+        # P2-11参数 备注DI2
+        p2_11 = instrument.read_register(0x0216)
+        mainUI.textBrowser.append(f"p2-11 = {hex(p2_11)}")
+        # P2-12参数 备注DI3
+        p2_12 =instrument.read_register(0x0218)
+        mainUI.textBrowser.append(f"p2-12 = {hex(p2_12)}")
+        # P2-13参数 备注DI4
+        p2_13 =instrument.read_register(0x021A)
+        mainUI.textBrowser.append(f"p2-13 = {hex(p2_13)}")
+        # P2-14参数 备注DI5
+        p2_14 = instrument.read_register(0x021C)
+        mainUI.textBrowser.append(f"p2-14 = {hex(p2_14)}")
+        # P2-15参数 备注DI6
+        p2_15 = instrument.read_register(0x021E)
+        mainUI.textBrowser.append(f"p2-15 = {hex(p2_15)}")
+        # P2-16参数 备注DI7
+        p2_16 = instrument.read_register(0x0220)
+        mainUI.textBrowser.append(f"p2-16 = {hex(p2_16)}")
+        # P2-17参数 备注DI8只用于加保护传感器 默认值0x21，测试值0
+        p2_17 = instrument.read_register(0x0222)
+        mainUI.textBrowser.append(f"p2-17 = {hex(p2_17)}")
 
 
 #初始化Canopen socket
@@ -584,27 +649,29 @@ class MyWindow(QMainWindow,Ui_MainWindow):
     # --------------------------------------------------------
     # 创建一个新线程来配置提升机
     def configLifter(self):
-        self.textBrowser.append("按钮点击")
-        configLifter(PortNumber)
-
-    def disbleIDBtn(self):
-        self.BtnNodeIdDetectionModbus.setDisabled(True)
-
-    def enbleIDBtn(self):
-        self.BtnNodeIdDetectionModbus.setDisabled(False)
+        self.configLifter = configLifterThread()
+        self.configLifter.started.connect(self.disableConfigLifterBtn)
+        self.configLifter.finished.connect(self.disableConfigLifterBtn)
+        self.configLifter.start()
+    def disableConfigLifterBtn(self):
+        self.BtnConfigLifter.setDisabled(True)
+    def disableConfigLifterBtn(self):
+        self.BtnConfigLifter.setDisabled(False)
     # ----------------------------------------------------------
 
     # --------------------------------------------------------
     # 创建一个新线程来读取提升机配置
     def readLifterConfig(self):
-        self.textBrowser.append("按钮点击")
+        self.checkLifterconfig = CheckLifterConfigThread()
+        self.checkLifterconfig.started.connect(self.disableCheckLifterconfigBtn)
+        self.checkLifterconfig.finished.connect(self.enableCheckLifterconfigBtn)
+        self.checkLifterconfig.start()
 
+    def disableCheckLifterconfigBtn(self):
+        self.BtnCheckLifterConfig.setDisabled(True)
 
-    def disbleIDBtn(self):
-        self.BtnNodeIdDetectionModbus.setDisabled(True)
-
-    def enbleIDBtn(self):
-        self.BtnNodeIdDetectionModbus.setDisabled(False)
+    def enableCheckLifterconfigBtn(self):
+        self.BtnCheckLifterConfig.setDisabled(False)
 
     # ----------------------------------------------------------
 
