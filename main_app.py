@@ -70,6 +70,7 @@ class CheckLifterConfigThread(QThread):
         mainUI.textBrowser.append(f"------------------------")
         checkLifterConfigInfo(PortNumber)
         mainUI.textBrowser.append(f"------------------------")
+        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
         self.finished.emit()
         
 #####################################################
@@ -278,10 +279,10 @@ def readLifterConfig(instrument):
         p1_01 = instrument.read_register(0x0102)
         mainUI.textBrowser.append(f"p1-01 = {hex(p1_01)}")
         # P1-52参数设置回生电阻值
-        p1_52 =  instrument.write_register(0x0168)
+        p1_52 =  instrument.read_register(0x0168)
         mainUI.textBrowser.append(f"p1-42 = {hex(p1_52)}")
         # P1-53参数设置回生电阻容量
-        p1_53 =instrument.write_register(0x016A)
+        p1_53 =instrument.read_register(0x016A)
         mainUI.textBrowser.append(f"p1-43 = {hex(p1_53)}")
         #读取提升机p2-10～p2-17参数
         readP2_10toP2_17Argu(instrument)
@@ -292,13 +293,13 @@ def readLifterConfig(instrument):
         p3_01 = instrument.read_register(0x0302)
         mainUI.textBrowser.append(f"p3-01 = {hex(p3_01)}")
         # P3-09参数 同步设置
-        p3_09 = instrument.write_register(0x0312)
+        p3_09 = instrument.read_register(0x0312)
         mainUI.textBrowser.append(f"p3-09 = {hex(p3_09)}")
         instrument.serial.close()
-        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
     except Exception:
         mainUI.textBrowser.append("参数读取失败，请重试,请排查串口是否错误！")
         mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
+        traceback.print_exc()
 
 #该函数用于读取提升机p2-10～p2-17参数
 def readP2_10toP2_17Argu(instrument):
