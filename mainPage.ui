@@ -595,6 +595,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>BtnNodeIdDetectionModbus</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>nodeIdDetectionModbus()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>565</x>
+     <y>725</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>737</x>
+     <y>748</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>changePort()</slot>

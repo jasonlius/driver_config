@@ -647,20 +647,20 @@ class MyWindow(QMainWindow,Ui_MainWindow):
     #----------------------------------------------------------
 
     # --------------------------------------------------------
-    # 创建一个新线程来配置提升机
+    # 创建一个新线程来配置举升机
     def configLifter(self):
         self.configLifter = configLifterThread()
         self.configLifter.started.connect(self.disableConfigLifterBtn)
-        self.configLifter.finished.connect(self.disableConfigLifterBtn)
+        self.configLifter.finished.connect(self.enableConfigLifterBtn)
         self.configLifter.start()
     def disableConfigLifterBtn(self):
         self.BtnConfigLifter.setDisabled(True)
-    def disableConfigLifterBtn(self):
+    def enableConfigLifterBtn(self):
         self.BtnConfigLifter.setDisabled(False)
     # ----------------------------------------------------------
 
     # --------------------------------------------------------
-    # 创建一个新线程来读取提升机配置
+    # 创建一个新线程来读取举升机配置
     def readLifterConfig(self):
         self.checkLifterconfig = CheckLifterConfigThread()
         self.checkLifterconfig.started.connect(self.disableCheckLifterconfigBtn)
