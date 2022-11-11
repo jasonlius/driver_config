@@ -34,8 +34,9 @@ class configDeltaMotorThread(QThread):
     finished = pyqtSignal()
     # 处理要做的业务逻辑
     def run(self):
+        port = MyWindow.get_port_list()[-1]
         self.started.emit()
-        configDeltaMotor(PortNumber)
+        configDeltaMotor(port)
         self.finished.emit()
 class CheckConfigModbusThread(QThread):
     # 通过类成员对象定义信号对象  
@@ -48,6 +49,7 @@ class CheckConfigModbusThread(QThread):
         mainUI.textBrowser.append(f"------------------------")
         checkDeltaConfigInfo(PortNumber)
         mainUI.textBrowser.append(f"------------------------")
+        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
         self.finished.emit()
 class configLifterThread(QThread):
     # 通过类成员对象定义信号对象  
@@ -256,10 +258,9 @@ def readDeltaConfig(instrument):
         p3_01 = instrument.read_register(0x0302)
         mainUI.textBrowser.append(f"p3-01 = {hex(p3_01)}")
         instrument.serial.close()
-        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
     except Exception:
         mainUI.textBrowser.append("参数读取失败，请重试,请排查串口是否错误！")
-        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
+       
 
 def checkLifterConfigInfo(portNumber):
     for i in range(3):
@@ -426,6 +427,7 @@ def detectModBusID():
     mainUI.textBrowser.append("开始寻找ModbusNodeID")
     idList = [*range(1,0x7f+1)]
     mainUI.textBrowser.append("请耐心等待")
+    mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
     random.shuffle(idList)
     for id in idList :
         try:
