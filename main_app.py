@@ -674,12 +674,20 @@ class MyWindow(QMainWindow,Ui_MainWindow):
             num_last = num
             QMessageBox.information(self, "提示", "检测到USB调试线被拔出，请确认当前调试线是否正确")
             PortNumber = port_list[-1][0]
-            self.textBrowser.setPlainText(f"自动设置当前调试串口为为{PortNumber},请确认当前调试线！")
+            if ("usb" in port_list[-1][1].lower()):
+                myWin.textBrowser.setPlainText(f"已检测到MODBUS调试线，调试线为{PortNumber},该线只可用于配置区配置参数")
+            elif ("can" in port_list[-1][1].lower()):
+                myWin.textBrowser.setPlainText(f"已检测到CANopen调试线，调试线为{PortNumber},该线只能用于CANopen区进行操作")
+            else:
+                self.textBrowser.setPlainText(f"串口错误不可使用,调试线有误请确认当前调试线！")
         if (num > num_last):
             num_last = num
             QMessageBox.information(self, "提示", "检测到有有新的USB调试线插入")
             PortNumber = port_list[-1][0]
-            self.textBrowser.setPlainText(f"已检测到调试线，调试线为{PortNumber},请开始配置吧！")
+            if ("usb" in port_list[-1][1].lower()):
+                myWin.textBrowser.setPlainText(f"已检测到MODBUS调试线，调试线为{PortNumber},该线只可用于配置区配置参数")
+            if ("can" in port_list[-1][1].lower()):
+                myWin.textBrowser.setPlainText(f"已检测到CANopen调试线，调试线为{PortNumber},该线只能用于CANopen区进行操作")
 
     # ----------------------------------------------------------
 
@@ -697,15 +705,14 @@ if __name__ == "__main__":
     port = portList[-1][1]
     if ("usb" not in port.lower() and "can" not in port.lower()) or num_last == 0 :
         BtnInfo = QMessageBox.information(myWin, "提示", "请先插入调试线,开启测试")
-        if BtnInfo == 1024:
-            portList = get_port_list()
-            num_last = len(portList)
-            PortNumber = portList[-1][0]  # 获取该串口的串口名
-            myWin.textBrowser.append(f"已检测到调试线，调试线为{PortNumber},请开始配置吧！")
 
     else:
         PortNumber = portList[-1][0] #获取该串口的串口名
-        myWin.textBrowser.append(f"已检测到调试线，调试线为{PortNumber},请开始配置吧！")
+        if ("usb" in portList[-1][1].lower()):
+            myWin.textBrowser.append(f"已检测到MODBUS调试线，调试线为{PortNumber},请开始配置吧！")
+        if ("can" in portList[-1][1].lower()):
+            myWin.textBrowser.append(f"已检测到CANopen调试线，调试线为{PortNumber},请开始测试提升机吧！")
+
     sys.exit(app.exec_())
 
 
