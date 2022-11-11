@@ -12,6 +12,8 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from mainPage import Ui_MainWindow
 from PyQt5.QtCore import QThread ,  pyqtSignal,  QDateTime
+import traceback
+
 #####################################################
 #                    多线程区                        #
 #####################################################
@@ -71,7 +73,7 @@ def initModbusInterface(portNumber,nodeID):
 
 #配置根据公司给出的参数表配置举升机
 def configLifter(portNumber):
-    for time in range(3):
+    for i in range(3):
         id = detectModBusID()
         if id != None:
             break
@@ -109,12 +111,11 @@ def configLifter(portNumber):
         instrument.write_register(0x0302, 0x0403, 0, 6)
         # P3-09参数 CANOpen同步设定
         instrument.write_register(0x0312, 0x5055, 0, 6)
-
         readDeltaConfig(instrument)
-        instrument.serial.close()
         mainUI.textBrowser.append("驱动器参数配置成功")
         mainUI.textBrowser.append("请重新启动驱动器使配置生效")
-
+        instrument.serial.close()
+        mainUI.textBrowser.append("请重新启动驱动器使配置生效")
     except Exception:
         mainUI.textBrowser.append("参数配置失败，请重试")
         mainUI.textBrowser.append("请检查是否有选择设备")
@@ -123,7 +124,7 @@ def configLifter(portNumber):
 
 #配置根据公司给出的参数表配置提升机
 def configDeltaMotor(portNumber):
-    for time in range(3):
+    for i in range(3):
         id = detectModBusID()
         if id != None:
             break
@@ -170,17 +171,20 @@ def configDeltaMotor(portNumber):
         instrument.write_register(0x0300, NodeID, 0, 6)
         # P3-01参数 备注CANOpen 波特率CAN bus 250 Kbps
         instrument.write_register(0x0302, 0x0103, 0, 6)
-        readDeltaConfig(instrument)
         instrument.serial.close()
+        time.sleep(1)
+        instrumentRead = initModbusInterface(portNumber,id)
+        readDeltaConfig(instrumentRead)
         mainUI.textBrowser.append("驱动器参数配置成功")
         mainUI.textBrowser.append("请重新启动驱动器使配置生效")
 
-    except Exception:
+    except Exception as e:
         mainUI.textBrowser.append("参数配置失败，请重试")
         mainUI.textBrowser.append("请检查是否有选择设备")
-
+        traceback.print_exc()
+        
 def checkDeltaConfigInfo(portNumber):
-    for time in range(3):
+    for i in range(3):
         id = detectModBusID()
         if id != None:
             break
