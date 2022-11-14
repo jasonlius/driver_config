@@ -147,6 +147,7 @@ def configLifter(portNumber):
         time.sleep(1)
         readLifterConfig(instrument)
         mainUI.textBrowser.append("成功！请重新启动驱动器使配置生效")
+        QMessageBox.information(mainUI,"提醒","配置成功，请重新启动驱动器使配置生效")
         mainUI.textBrowser.append("————————————————————————————")
         mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
     except Exception as e:
@@ -206,6 +207,7 @@ def configDeltaMotor(portNumber):
         instrument.write_register(0x0302, 0x0103, 0, 6)
         mainUI.textBrowser.append("————————————————————————————")
         mainUI.textBrowser.append("配置成功！参数配置显示如下")
+        QMessageBox.information(mainUI, "提醒", "配置成功，请重新启动驱动器使配置生效")
         time.sleep(1)
         readDeltaConfig(instrument)
         mainUI.textBrowser.append("成功！请重新启动驱动器使配置生效")
