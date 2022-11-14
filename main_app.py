@@ -683,7 +683,7 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         if (num > num_last):
             num_last = num
             QMessageBox.information(self, "提示", "检测到有有新的USB调试线插入")
-            self.disableAllButton(False)
+            self.enbleALlBtn()
             PortNumber = port_list[-1][0]
             if ("usb" in port_list[-1][1].lower()):
                 myWin.textBrowser.setPlainText(f"已检测到MODBUS调试线，调试线为{PortNumber},该线只可用于配置区配置参数")
