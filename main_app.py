@@ -583,6 +583,16 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.BtnBaudDetect.setDisabled(True)
         self.BtnCheckConfig.setDisabled(True)
 
+    def disableAllButton(self,isDisabled):
+        self.BtnConfig.setDisabled(isDisabled)
+        self.BtnConfigLifter.setDisabled(isDisabled)
+        self.BtnCheckLifterConfig.setDisabled(isDisabled)
+        self.BtnCheckConfigModbus.setDisabled(isDisabled)
+        self.BtnTestLifter.setDisabled(isDisabled)
+        self.BtnNodeIdDetectionModbus.setDisabled(isDisabled)
+        self.BtnBaudDetect.setDisabled(isDisabled)
+        self.BtnCheckConfig.setDisabled(isDisabled)
+
     def detectBaud(self):
         searchBaud()
         self.BtnTestLifter.setDisabled(False)
@@ -617,55 +627,43 @@ class MyWindow(QMainWindow,Ui_MainWindow):
     #创建一个新线程来查看驱动器配置
     def checkConfigModbus(self):
         self.CheckconfigThread = CheckConfigModbusThread()
-        self.CheckconfigThread.started.connect(self.disbleCheckBtn)
-        self.CheckconfigThread.finished.connect(self.enbleCheckBtn)
+        self.CheckconfigThread.started.connect(self.disbleAllBtn)
+        self.CheckconfigThread.finished.connect(self.enbleALlBtn)
         self.CheckconfigThread.start()
-    def disbleCheckBtn(self):
-        self.BtnCheckConfigModbus.setDisabled(True)
-    def enbleCheckBtn(self):
-        self.BtnCheckConfigModbus.setDisabled(False)
+    def disbleAllBtn(self):
+        self.disableAllButton(True)
+    def enbleALlBtn(self):
+        self.disableAllButton(False)
+        if self.SensorDetectcomboBox.currentText() == "请选择":
+            self.BtnConfig.setDisabled(True)
      #----------------------------------------------------------
 
     #--------------------------------------------------------
     #创建一个新线程来检测节点id
     def nodeIdDetectionModbus(self):
         self.idDetetctThread = NodeIdDetetctThread()
-        self.idDetetctThread.started.connect(self.disbleIDBtn)
-        self.idDetetctThread.finished.connect(self.enbleIDBtn)
+        self.idDetetctThread.started.connect(self.disbleAllBtn)
+        self.idDetetctThread.finished.connect(self.enbleALlBtn)
         self.idDetetctThread.start()
-    def disbleIDBtn(self):
-        self.BtnNodeIdDetectionModbus.setDisabled(True)
-    def enbleIDBtn(self):
-        self.BtnNodeIdDetectionModbus.setDisabled(False)
+
     #----------------------------------------------------------
 
     # --------------------------------------------------------
     # 创建一个新线程来配置举升机
     def configLifter(self):
         self.configLifterTh = configLifterThread()
-        self.configLifterTh.started.connect(self.disableConfigLifterBtn)
-        self.configLifterTh.finished.connect(self.enableConfigLifterBtn)
+        self.configLifterTh.started.connect(self.disbleAllBtn)
+        self.configLifterTh.finished.connect(self.enbleALlBtn)
         self.configLifterTh.start()
-    def disableConfigLifterBtn(self):
-        self.BtnConfigLifter.setDisabled(True)
-    def enableConfigLifterBtn(self):
-        self.BtnConfigLifter.setDisabled(False)
     # ----------------------------------------------------------
 
     # --------------------------------------------------------
     # 创建一个新线程来读取举升机配置
     def readLifterConfig(self):
         self.checkLifterconfig = CheckLifterConfigThread()
-        self.checkLifterconfig.started.connect(self.disableCheckLifterconfigBtn)
-        self.checkLifterconfig.finished.connect(self.enableCheckLifterconfigBtn)
+        self.checkLifterconfig.started.connect(self.disbleAllBtn)
+        self.checkLifterconfig.finished.connect(self.enbleALlBtn)
         self.checkLifterconfig.start()
-
-    def disableCheckLifterconfigBtn(self):
-        self.BtnCheckLifterConfig.setDisabled(True)
-
-    def enableCheckLifterconfigBtn(self):
-        self.BtnCheckLifterConfig.setDisabled(False)
-
 
     def refresh(self):
         global num_last
@@ -706,8 +704,14 @@ if __name__ == "__main__":
     #获取该串口的厂商参数
     port = portList[-1][1]
     if ("usb" not in port.lower() and "can" not in port.lower()) or num_last == 0 :
-        BtnInfo = QMessageBox.information(myWin, "提示", "请先插入调试线,开启测试")
-
+        QMessageBox.information(myWin, "提示", "请先插入调试线,开启配置与测试")
+        port_list = get_port_list()
+        num = len(port_list)
+        while (num == num_last):
+            QMessageBox.information(myWin, "提示", "请先插入调试线,开启配置与测试")
+            num_last = num
+            port_list = get_port_list()
+            num = len(port_list)
     else:
         PortNumber = portList[-1][0] #获取该串口的串口名
         if ("usb" in portList[-1][1].lower()):
