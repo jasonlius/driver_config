@@ -335,7 +335,6 @@ def readP2_10toP2_17Argu(instrument):
         p2_17 = instrument.read_register(0x0222)
         mainUI.textBrowser.append(f"p2-17 = {hex(p2_17)}")
 
-
 #初始化Canopen socket
 def initCanInterface(portNumber,baud):
     mainUI.textBrowser.append("初始化CanOpen接口")  
@@ -599,13 +598,9 @@ class MyWindow(QMainWindow,Ui_MainWindow):
 
     def configDriver(self):
         self.configThread = configDeltaMotorThread()
-        self.configThread.started.connect(self.disbleConfigBtn)
-        self.configThread.finished.connect(self.enbleConfigBtn)
+        self.configThread.started.connect(self.disableAllButton)
+        self.configThread.finished.connect(self.enbleALlBtn)
         self.configThread.start()
-    def disbleConfigBtn(self):
-        self.BtnConfig.setDisabled(True)
-    def enbleConfigBtn(self):
-        self.BtnConfig.setDisabled(False)
 
     def testLifter(self):
         testPositionMode(PortNumber)
@@ -623,6 +618,7 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         except Exception:
             mainUI.textBrowser.append("错误，请输入数字")
         print(RotationValue)
+
      #--------------------------------------------------------
     #创建一个新线程来查看驱动器配置
     def checkConfigModbus(self):
@@ -630,12 +626,6 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.CheckconfigThread.started.connect(self.disbleAllBtn)
         self.CheckconfigThread.finished.connect(self.enbleALlBtn)
         self.CheckconfigThread.start()
-    def disbleAllBtn(self):
-        self.disableAllButton(True)
-    def enbleALlBtn(self):
-        self.disableAllButton(False)
-        if self.SensorDetectcomboBox.currentText() == "请选择":
-            self.BtnConfig.setDisabled(True)
      #----------------------------------------------------------
 
     #--------------------------------------------------------
@@ -664,7 +654,13 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.checkLifterconfig.started.connect(self.disbleAllBtn)
         self.checkLifterconfig.finished.connect(self.enbleALlBtn)
         self.checkLifterconfig.start()
-
+    # ----------------------------------------------------------
+    def disbleAllBtn(self):
+        self.disableAllButton(True)
+    def enbleALlBtn(self):
+        self.disableAllButton(False)
+        if self.SensorDetectcomboBox.currentText() == "请选择":
+            self.BtnConfig.setDisabled(True)
     def refresh(self):
         global num_last
         global PortNumber
@@ -674,6 +670,7 @@ class MyWindow(QMainWindow,Ui_MainWindow):
             num_last = num
             QMessageBox.information(self, "提示", "检测到USB调试线被拔出，请确认当前调试线是否正确")
             PortNumber = port_list[-1][0]
+            self.disableAllButton(True)
             if ("usb" in port_list[-1][1].lower()):
                 myWin.textBrowser.setPlainText(f"已检测到MODBUS调试线，调试线为{PortNumber},该线只可用于配置区配置参数")
             elif ("can" in port_list[-1][1].lower()):
