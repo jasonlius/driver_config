@@ -30,13 +30,16 @@ class NodeIdDetetctThread(QThread):
         self.finished.emit()
 
 class configDeltaMotorThread(QThread):
-    # 通过类成员对象定义信号对象  
+    # 通过类成员对象定义信号对象
+    informationAction = pyqtSignal(str)
     started = pyqtSignal()
     finished = pyqtSignal()
     # 处理要做的业务逻辑
     def run(self):
         self.started.emit()
-        configDeltaMotor(PortNumber)
+        isSuccessful = configDeltaMotor(PortNumber)
+        if(isSuccessful):
+            self.informationAction.emit("配置成功，请重启驱动器")
         self.finished.emit()
 class CheckConfigModbusThread(QThread):
     # 通过类成员对象定义信号对象  
@@ -216,13 +219,16 @@ def configDeltaMotor(portNumber):
         time.sleep(1)
         readDeltaConfig(instrument)
         mainUI.textBrowser.append("成功！请重新启动驱动器使配置生效")
+        isSuccessful = True
         mainUI.textBrowser.append("————————————————————————————")
         mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
-
+        return  isSuccessful
     except Exception as e:
         mainUI.textBrowser.append("参数配置失败，请重试")
         mainUI.textBrowser.append("请检查是否有选择设备")
         traceback.print_exc()
+        isSuccessful = False
+        return  isSuccessful
         
 def checkDeltaConfigInfo(portNumber):
     for i in range(3):
@@ -615,6 +621,7 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.configThread = configDeltaMotorThread()
         self.configThread.started.connect(self.disbleAllBtn)
         self.configThread.finished.connect(self.enbleALlBtn)
+        self.configThread.informationAction.connect(self.popUpReminder)
         self.configThread.start()
 
     def testLifter(self):
