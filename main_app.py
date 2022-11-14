@@ -98,7 +98,7 @@ def initModbusInterface(portNumber,nodeID):
         return instrument
     except Exception:
         mainUI.textBrowser.append("初始化串口失败，请检查连线是否已经插牢，或者串口是否选择错误")
-
+        traceback.print_exc()
 
 
 #配置根据公司给出的参数表配置举升机
@@ -451,6 +451,7 @@ def detectModBusID():
             return id
         except Exception:
             instrument.serial.close()
+            traceback.print_exc()
             continue
     mainUI.textBrowser.append("检测失败！检查是否串口选择错误，或者连线不牢")
     return None
@@ -583,6 +584,8 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.BtnCheckConfig.setDisabled(True)
 
     def disableAllButton(self,isDisabled):
+        self.canopenIdComboBox.setDisabled(isDisabled)
+        self.SensorDetectcomboBox.setDisabled(isDisabled)
         self.BtnConfig.setDisabled(isDisabled)
         self.BtnConfigLifter.setDisabled(isDisabled)
         self.BtnCheckLifterConfig.setDisabled(isDisabled)
@@ -670,7 +673,7 @@ class MyWindow(QMainWindow,Ui_MainWindow):
             num_last = num
             QMessageBox.information(self, "提示", "检测到USB调试线被拔出，请确认当前调试线是否正确")
             PortNumber = port_list[-1][0]
-            self.disableAllButton(True)
+            self.disbleAllBtn(True)
             if ("usb" in port_list[-1][1].lower()):
                 myWin.textBrowser.setPlainText(f"已检测到MODBUS调试线，调试线为{PortNumber},该线只可用于配置区配置参数")
             elif ("can" in port_list[-1][1].lower()):
