@@ -724,7 +724,7 @@ class MyWindow(QMainWindow,Ui_MainWindow):
                 if ("can" in port_list[-1][1].lower()):
                     myWin.textBrowser.setPlainText(f"已检测到CANopen调试线，调试线为{PortNumber},该线只能用于CANopen区进行操作")
         else:
-            popUpMessageIfNoSerial(num_last, myWin)
+            popUpMessageIfNoSerial(num, myWin)
     # ----------------------------------------------------------
 
 
