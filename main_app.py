@@ -729,7 +729,6 @@ if __name__ == "__main__":
     #获取该串口的厂商参数
     port = portList[-1][1]
     if ("usb" not in port.lower() and "can" not in port.lower()) or num_last == 0 :
-        QMessageBox.information(myWin, "提示", "请先插入调试线,开启配置与测试")
         port_list = get_port_list()
         num = len(port_list)
         while (num == num_last):
