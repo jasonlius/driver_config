@@ -287,10 +287,10 @@ def readLifterConfig(instrument):
         mainUI.textBrowser.append(f"p1-01 = {hex(p1_01)}")
         # P1-52参数设置回生电阻值
         p1_52 =  instrument.read_register(0x0168)
-        mainUI.textBrowser.append(f"p1-42 = {hex(p1_52)}")
+        mainUI.textBrowser.append(f"p1-52 = {hex(p1_52)}")
         # P1-53参数设置回生电阻容量
         p1_53 =instrument.read_register(0x016A)
-        mainUI.textBrowser.append(f"p1-43 = {hex(p1_53)}")
+        mainUI.textBrowser.append(f"p1-53 = {hex(p1_53)}")
         #读取提升机p2-10～p2-17参数
         readP2_10toP2_17Argu(instrument)
         # P3-00参数 提升机的设备ID
