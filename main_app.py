@@ -55,10 +55,13 @@ class configLifterThread(QThread):
     # 通过类成员对象定义信号对象  
     started = pyqtSignal()
     finished = pyqtSignal()
+    informationAction = pyqtSignal(str)
     # 处理要做的业务逻辑
     def run(self):
         self.started.emit()
-        configLifter(PortNumber)
+        isSuccessful = configLifter(PortNumber)
+        if(isSuccessful):
+           self.informationAction.emit("配置成功，请重启驱动器")
         self.finished.emit()
 
 class CheckLifterConfigThread(QThread):
@@ -147,13 +150,16 @@ def configLifter(portNumber):
         time.sleep(1)
         readLifterConfig(instrument)
         mainUI.textBrowser.append("成功！请重新启动驱动器使配置生效")
-        QMessageBox.information(mainUI,"提醒","配置成功，请重新启动驱动器使配置生效")
+        isSuccessful = True
         mainUI.textBrowser.append("————————————————————————————")
         mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
+        return isSuccessful
     except Exception as e:
         mainUI.textBrowser.append("参数配置失败，请重试")
         mainUI.textBrowser.append("请检查是否有选择设备")
         traceback.print_exc()
+        isSuccessful = False
+        return isSuccessful
 
 #配置根据公司给出的参数表配置提升机
 #传入参数为
@@ -207,7 +213,6 @@ def configDeltaMotor(portNumber):
         instrument.write_register(0x0302, 0x0103, 0, 6)
         mainUI.textBrowser.append("————————————————————————————")
         mainUI.textBrowser.append("配置成功！参数配置显示如下")
-        QMessageBox.information(mainUI, "提醒", "配置成功，请重新启动驱动器使配置生效")
         time.sleep(1)
         readDeltaConfig(instrument)
         mainUI.textBrowser.append("成功！请重新启动驱动器使配置生效")
@@ -654,6 +659,7 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.configLifterTh = configLifterThread()
         self.configLifterTh.started.connect(self.disbleAllBtn)
         self.configLifterTh.finished.connect(self.enbleALlBtn)
+        self.configLifterTh.informationAction.connect(self.popUpReminder)
         self.configLifterTh.start()
     # ----------------------------------------------------------
 
@@ -673,6 +679,8 @@ class MyWindow(QMainWindow,Ui_MainWindow):
             self.BtnConfig.setDisabled(True)
         if self.canopenIdComboBox.currentText() == "设备":
              self.SensorDetectcomboBox.setDisabled(True)
+    def popUpReminder(self,str):
+        QMessageBox.information(self ,"提醒" , str)
     def refresh(self):
         global num_last
         global PortNumber
