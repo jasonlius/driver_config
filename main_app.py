@@ -6,7 +6,6 @@ import minimalmodbus as minimalmodbus
 import serial
 import serial.tools.list_ports
 from PyQt5 import  QtGui
-from PyQt5 import  QtWidgets
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QMainWindow, QApplication
@@ -538,6 +537,16 @@ def checkCurrentConfig():
     except Exception:
         mainUI.textBrowser.append(f"查看失败请重试")
 
+def popUpMessageIfNoSerial(num_last,ui):
+    port_list = get_port_list()
+    num = len(port_list)
+    while (num == num_last):
+        QMessageBox.information(ui, "提示", "请先插入调试线,开启配置与测试")
+        num_last = num
+        port_list = get_port_list()
+        num = len(port_list)
+
+
 #####################################################
 #                    创建主界面                       #
 #####################################################
@@ -727,22 +736,18 @@ if __name__ == "__main__":
     myWin = MyWindow()
     myWin.show()
     #获取该串口的厂商参数
-    port = portList[-1][1]
-    if ("usb" not in port.lower() and "can" not in port.lower()) or num_last == 0 :
-        port_list = get_port_list()
-        num = len(port_list)
-        while (num == num_last):
-            QMessageBox.information(myWin, "提示", "请先插入调试线,开启配置与测试")
-            num_last = num
-            port_list = get_port_list()
-            num = len(port_list)
+    if num_last != 0:
+        port = portList[-1][1]
+        if "usb" not in port.lower() and "can" not in port.lower():
+            popUpMessageIfNoSerial(num_last, myWin)
+        else:
+            PortNumber = portList[-1][0] #获取该串口的串口名
+            if ("usb" in portList[-1][1].lower()):
+                myWin.textBrowser.append(f"已检测到MODBUS调试线，调试线为{PortNumber},请开始配置吧！")
+            if ("can" in portList[-1][1].lower()):
+                myWin.textBrowser.append(f"已检测到CANopen调试线，调试线为{PortNumber},请开始测试提升机吧！")
     else:
-        PortNumber = portList[-1][0] #获取该串口的串口名
-        if ("usb" in portList[-1][1].lower()):
-            myWin.textBrowser.append(f"已检测到MODBUS调试线，调试线为{PortNumber},请开始配置吧！")
-        if ("can" in portList[-1][1].lower()):
-            myWin.textBrowser.append(f"已检测到CANopen调试线，调试线为{PortNumber},请开始测试提升机吧！")
-
+        popUpMessageIfNoSerial(num_last, myWin)
     sys.exit(app.exec_())
 
 
