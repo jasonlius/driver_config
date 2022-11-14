@@ -450,7 +450,10 @@ def detectModBusID():
             instrument.serial.close()
             return id
         except Exception:
-            instrument.serial.close()
+            try:
+                instrument.serial.close()
+            except Exception:
+                mainUI.textBrowser.append("错误，串口关闭失败，请检查是否存在串口")
             traceback.print_exc()
             continue
     mainUI.textBrowser.append("检测失败！检查是否串口选择错误，或者连线不牢")
@@ -560,6 +563,8 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         else:
             QMessageBox.warning(self,"警告","请选择设备")
             self.SensorDetectcomboBox.setDisabled(True)
+            if self.SensorDetectcomboBox.currentText() != "请选择":
+                self.BtnConfig.setDisabled(True)
         self.textBrowser.append(f"canopenID为{NodeID}")
 
     def ProtectSensor(self):
@@ -664,6 +669,8 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.disableAllButton(False)
         if self.SensorDetectcomboBox.currentText() == "请选择":
             self.BtnConfig.setDisabled(True)
+        if self.canopenIdComboBox.currentText() == "设备":
+             self.SensorDetectcomboBox.setDisabled(True)
     def refresh(self):
         global num_last
         global PortNumber
