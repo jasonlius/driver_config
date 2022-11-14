@@ -567,13 +567,15 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.BtnConfig.setDisabled(False)
         if self.SensorDetectcomboBox.currentText() == "需要":
             SensorValue = 0x21
+            self.textBrowser.append(f"传感器参数配置值为{SensorValue}")
         elif self.SensorDetectcomboBox.currentText() == "不需要":
             SensorValue = 0x0
+            self.textBrowser.append(f"传感器参数配置值为{SensorValue}")
         else:
             QMessageBox.warning(self,"警告","请点击需要或者不需要")
             self.textBrowser.clear()
             self.BtnConfig.setDisabled(True)
-        self.textBrowser.append(f"传感器参数配置值为{SensorValue}")
+
     def disableButton(self):
         self.SensorDetectcomboBox.setDisabled(True)
         self.BtnConfig.setDisabled(True)
