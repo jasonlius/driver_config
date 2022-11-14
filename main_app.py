@@ -598,7 +598,7 @@ class MyWindow(QMainWindow,Ui_MainWindow):
 
     def configDriver(self):
         self.configThread = configDeltaMotorThread()
-        self.configThread.started.connect(self.disableAllButton)
+        self.configThread.started.connect(self.disbleAllBtn)
         self.configThread.finished.connect(self.enbleALlBtn)
         self.configThread.start()
 
