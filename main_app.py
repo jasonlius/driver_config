@@ -702,27 +702,29 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         global PortNumber
         port_list = get_port_list()
         num = len(port_list)
-        if (num < num_last):
-            num_last = num
-            QMessageBox.information(self, "提示", "检测到USB调试线被拔出，请确认当前调试线是否正确")
-            PortNumber = port_list[-1][0]
-            self.disableAllButton(True)
-            if ("usb" in port_list[-1][1].lower()):
-                myWin.textBrowser.setPlainText(f"已检测到MODBUS调试线，调试线为{PortNumber},该线只可用于配置区配置参数")
-            elif ("can" in port_list[-1][1].lower()):
-                myWin.textBrowser.setPlainText(f"已检测到CANopen调试线，调试线为{PortNumber},该线只能用于CANopen区进行操作")
-            else:
-                self.textBrowser.setPlainText(f"串口错误不可使用,调试线有误请确认当前调试线！")
-        if (num > num_last):
-            num_last = num
-            QMessageBox.information(self, "提示", "检测到有有新的USB调试线插入")
-            self.enbleALlBtn()
-            PortNumber = port_list[-1][0]
-            if ("usb" in port_list[-1][1].lower()):
-                myWin.textBrowser.setPlainText(f"已检测到MODBUS调试线，调试线为{PortNumber},该线只可用于配置区配置参数")
-            if ("can" in port_list[-1][1].lower()):
-                myWin.textBrowser.setPlainText(f"已检测到CANopen调试线，调试线为{PortNumber},该线只能用于CANopen区进行操作")
-
+        if num != 0:
+            if (num < num_last):
+                num_last = num
+                QMessageBox.information(self, "提示", "检测到USB调试线被拔出，请确认当前调试线是否正确")
+                PortNumber = port_list[-1][0]
+                self.disableAllButton(True)
+                if ("usb" in port_list[-1][1].lower()):
+                    myWin.textBrowser.setPlainText(f"已检测到MODBUS调试线，调试线为{PortNumber},该线只可用于配置区配置参数")
+                elif ("can" in port_list[-1][1].lower()):
+                    myWin.textBrowser.setPlainText(f"已检测到CANopen调试线，调试线为{PortNumber},该线只能用于CANopen区进行操作")
+                else:
+                    self.textBrowser.setPlainText(f"串口错误不可使用,调试线有误请确认当前调试线！")
+            if (num > num_last):
+                num_last = num
+                QMessageBox.information(self, "提示", "检测到有有新的USB调试线插入")
+                self.enbleALlBtn()
+                PortNumber = port_list[-1][0]
+                if ("usb" in port_list[-1][1].lower()):
+                    myWin.textBrowser.setPlainText(f"已检测到MODBUS调试线，调试线为{PortNumber},该线只可用于配置区配置参数")
+                if ("can" in port_list[-1][1].lower()):
+                    myWin.textBrowser.setPlainText(f"已检测到CANopen调试线，调试线为{PortNumber},该线只能用于CANopen区进行操作")
+        else:
+            popUpMessageIfNoSerial(num_last, myWin)
     # ----------------------------------------------------------
 
 
