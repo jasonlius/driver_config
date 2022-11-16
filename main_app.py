@@ -541,11 +541,16 @@ def popUpMessageIfNoSerial(num_last,ui):
     port_list = get_port_list()
     num = len(port_list)
     while (num == num_last):
-        QMessageBox.information(ui, "提示", "请先插入调试线,开启配置与测试")
-        num_last = num
-        port_list = get_port_list()
-        num = len(port_list)
-
+        messageBox = QMessageBox(QMessageBox.Warning, "提示", "请先插入调试线,开启配置与测试")
+        Qyes = messageBox.addButton(messageBox.tr("我已插入"), QMessageBox.YesRole)
+        Qno = messageBox.addButton(messageBox.tr("退出程序"), QMessageBox.NoRole)
+        messageBox.exec_()
+        if messageBox.clickedButton() == Qyes:
+            num_last = num
+            port_list = get_port_list()
+            num = len(port_list)
+        else:
+            sys.exit()
 
 #####################################################
 #                    创建主界面                       #
