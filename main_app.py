@@ -1,6 +1,8 @@
 import sys
 import random
 import time
+import trace
+
 import canopen as canopen
 import minimalmodbus as minimalmodbus
 import serial
@@ -13,6 +15,7 @@ from mainPage import Ui_MainWindow
 from PyQt5.QtCore import QThread ,  pyqtSignal,  QDateTime
 import traceback
 from PyQt5.QtWidgets import QMessageBox
+import os
 
 #####################################################
 #                    多线程区                        #
@@ -83,6 +86,13 @@ class CheckLifterConfigThread(QThread):
 #####################################################
 #                    功能函数区                       #
 #####################################################
+
+def base_path(path):
+  if getattr(sys, 'frozen', None):
+    basedir = sys._MEIPASS
+  else:
+    basedir = os.path.dirname(__file__)
+  return os.path.join(basedir, path)
 
 # 获取端口号
 def get_port_list():
@@ -359,9 +369,14 @@ def initCanInterface(portNumber,baud):
 #A2驱动器canopen通信协议控制，参考台达A2CANOpen英文文档中profile position mode一节
 def testPositionMode(portNumber):
     try:
+        tmd = base_path('')  # 这是解压路径
+        cwd = os.getcwd()  # 这是程序的所在路径
+        # 当需要调用打包的外部文件时
+        os.chdir(tmd)  # 先把工作路径变成解压路径
+        path1 = os.path.abspath('.')
         mainUI.textBrowser.append("开始测试提升机电机运转")
         network = initCanInterface(portNumber,Baud)
-        deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
+        deltaMotorNode = network.add_node(NodeID, f'{path1}/ASDA-A3_v04.eds')
         deltaMotorNode.nmt.state = 'OPERATIONAL'
         deltaMotorNode.sdo[0x6060].write(0x01)
         deltaMotorNode.sdo[0x607A].write(100000000)
@@ -385,6 +400,8 @@ def testPositionMode(portNumber):
     except Exception:
         mainUI.textBrowser.append("提升机测试失败，请检查以下几点")
         mainUI.textBrowser.append("1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
+        exceptionInf0 = traceback.format_exc()
+        mainUI.textBrowser.setPlainText(exceptionInf0)
 
 
 def findDevice(baud):
@@ -474,8 +491,9 @@ def detectModBusID():
 
 def checkCurrentConfig():
     try:
+        path1 = os.path.abspath('.')
         network = initCanInterface(PortNumber, Baud)
-        deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
+        deltaMotorNode = network.add_node(NodeID, f'{path1}/ASDA-A3_v04.eds')
         deltaMotorNode.nmt.state = 'OPERATIONAL'
         # docs https://hcrobots.feishu.cn/wiki/wikcnRos1XZ9nR1C5cXYaBgY1zd
         # p1-01 value is 0x010C
