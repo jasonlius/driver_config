@@ -364,7 +364,7 @@ def testPositionMode(portNumber):
         deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
         deltaMotorNode.nmt.state = 'OPERATIONAL'
         deltaMotorNode.sdo[0x6060].write(0x01)
-        deltaMotorNode.sdo[0x607A].write(100000000)
+        deltaMotorNode.sdo[0x607A].write(10000000)
         deltaMotorNode.sdo[0x6081].write(5000000)
         deltaMotorNode.sdo[0x6083].write(300)
         deltaMotorNode.sdo[0x6084].write(300)
@@ -373,19 +373,22 @@ def testPositionMode(portNumber):
         deltaMotorNode.sdo[0x6040].write(0x07)
         deltaMotorNode.sdo[0x6040].write(0x0F)
         deltaMotorNode.sdo[0x6040].write(0x7F)
+        mainUI.textBrowser.append("提升机测试运转成功")
         #check current position of The motor（The unit is PPU）
-        current_position =  deltaMotorNode.sdo[0x6064].read()
-        mainUI.textBrowser.append(f"电机当前位置为:{current_position}PPU")
+        v = deltaMotorNode.sdo[0x606c].read()
+        while(v != 0):
+            current_position =  deltaMotorNode.sdo[0x6064].read()
+            mainUI.textBrowser.append(f"电机当前位置为:{current_position}PPU")
+            v = deltaMotorNode.sdo[0x606c].read()
+            mainUI.textBrowser.append(f"电机当前速度为:{v}/ppu")
         #check current running state of The motor
         # the specific meaning of state code refere to delta documentation
-        current_status =  deltaMotorNode.sdo[0x6041].read()
-        mainUI.textBrowser.append(f"当前电机运转状态码:{current_status}")
-        mainUI.textBrowser.append("提升机测试运转成功")
         network.disconnect()
+        return v
     except Exception:
         mainUI.textBrowser.append("提升机测试失败，请检查以下几点")
         mainUI.textBrowser.append("1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
-
+        traceback.print_exc()
 
 def findDevice(baud):
     global NodeID
@@ -639,7 +642,11 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.configThread.start()
 
     def testLifter(self):
-        testPositionMode(PortNumber)
+        v = testPositionMode(PortNumber)
+        while v == 0:
+            time.sleep(2)
+            v = testPositionMode(PortNumber)
+
 
     def checkConfig(self):
         self.textBrowser.append(f"开始检测配置值")
