@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1378</width>
-    <height>778</height>
+    <width>1208</width>
+    <height>1016</height>
    </rect>
   </property>
   <property name="font">
@@ -19,141 +19,47 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="1">
-     <widget class="QGroupBox" name="groupBox_3">
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
+     <widget class="QGroupBox" name="groupBox">
       <property name="font">
        <font>
-        <pointsize>17</pointsize>
+        <family>Arial</family>
+        <pointsize>15</pointsize>
        </font>
       </property>
       <property name="title">
-       <string>提升机驱动器配置区：</string>
+       <string/>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QPushButton" name="BtnCheckConfigModbus">
-         <property name="font">
-          <font>
-           <pointsize>17</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>读取提升机配置</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_5">
-         <property name="font">
-          <font>
-           <pointsize>17</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>选择设备</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="canopenIdComboBox">
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
-          <property name="text">
-           <string>设备</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>1(上升列)</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>2(下降列)</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>293</width>
-           <height>17</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_6">
-         <property name="font">
-          <font>
-           <pointsize>17</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>防夹车传感器</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QComboBox" name="SensorDetectcomboBox">
-         <item>
-          <property name="text">
-           <string>请选择</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>需要</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>不需要</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_5">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>293</width>
-           <height>17</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QPushButton" name="BtnConfig">
+          <widget class="QTextBrowser" name="textBrowser">
            <property name="font">
             <font>
-             <pointsize>17</pointsize>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
             </font>
-           </property>
-           <property name="text">
-            <string>配置</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="BtnNodeIdDetectionModbus">
+          <widget class="QLabel" name="label">
            <property name="font">
             <font>
-             <pointsize>17</pointsize>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
             </font>
            </property>
+           <property name="layoutDirection">
+            <enum>Qt::LeftToRight</enum>
+           </property>
            <property name="text">
-            <string>NodeID检测(MODBUS)</string>
+            <string>信息显示</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -162,134 +68,509 @@
       </layout>
      </widget>
     </item>
-    <item row="1" column="3">
-     <widget class="QGroupBox" name="groupBox_4">
-      <property name="font">
-       <font>
-        <pointsize>17</pointsize>
-       </font>
-      </property>
-      <property name="title">
-       <string>CanOpen操作区：</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QPushButton" name="BtnCheckConfig">
-         <property name="font">
-          <font>
-           <pointsize>17</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>读取当前驱动器配置</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_7">
-         <property name="font">
-          <font>
-           <pointsize>17</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>旋转量输入:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="lineEdit"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="BtnTestLifter">
-         <property name="font">
-          <font>
-           <pointsize>17</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>启动提升机测试</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="BtnBaudDetect">
-         <property name="font">
-          <font>
-           <pointsize>17</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>波特率与nodeID检测</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="0" column="0" colspan="4">
-     <widget class="QGroupBox" name="groupBox">
-      <property name="title">
-       <string/>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QTextBrowser" name="textBrowser"/>
-       </item>
-       <item>
-        <widget class="QLabel" name="label">
-         <property name="font">
-          <font>
-           <family>.Farah PUA</family>
-           <pointsize>18</pointsize>
-          </font>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="text">
-          <string>配置信息显示</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QGroupBox" name="groupBox_5">
-      <property name="font">
-       <font>
-        <pointsize>17</pointsize>
-       </font>
-      </property>
-      <property name="title">
-       <string>举升机配置区：</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout_5">
+    <item row="1" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_14">
+      <item>
+       <widget class="QGroupBox" name="groupBox_3">
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>15</pointsize>
+         </font>
+        </property>
+        <property name="title">
+         <string>提升机驱动器配置区：</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QPushButton" name="BtnCheckConfigModbus">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton{background-color: rgb(225, 225, 225);border:1px groove gray;border-radius:4px;padding:1px 4px;border-style: outset;}
+QPushButton:hover{background-color:rgb(229, 241, 251); color: black;}
+QPushButton:pressed{background-color:rgb(204, 228, 247);border-style: inset;}</string>
+           </property>
+           <property name="text">
+            <string>读取提升机配置</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
+           <property name="default">
+            <bool>false</bool>
+           </property>
+           <property name="flat">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>选择设备</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="canopenIdComboBox">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
+            </font>
+           </property>
+           <item>
+            <property name="text">
+             <string>设备</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>1(上升列)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>2(下降列)</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_6">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>防夹车传感器</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="SensorDetectcomboBox">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
+            </font>
+           </property>
+           <item>
+            <property name="text">
+             <string>请选择</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>需要</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>不需要</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_13">
+           <item>
+            <widget class="QPushButton" name="BtnConfig">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>15</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton{background-color: rgb(225, 225, 225);border:1px groove gray;border-radius:4px;padding:1px 4px;border-style: outset;}
+QPushButton:hover{background-color:rgb(229, 241, 251); color: black;}
+QPushButton:pressed{background-color:rgb(204, 228, 247);border-style: inset;}</string>
+             </property>
+             <property name="text">
+              <string>配置</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="BtnNodeIdDetectionModbus">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>15</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton{background-color: rgb(225, 225, 225);border:1px groove gray;border-radius:4px;padding:1px 4px;border-style: outset;}
+QPushButton:hover{background-color:rgb(229, 241, 251); color: black;}
+QPushButton:pressed{background-color:rgb(204, 228, 247);border-style: inset;}</string>
+             </property>
+             <property name="text">
+              <string>NodeID检测(MODBUS)</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
+            </font>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>393</width>
+             <height>14</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_4">
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>15</pointsize>
+         </font>
+        </property>
+        <property name="title">
+         <string>提升机电机测试区：</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="label_10">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>15</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>选择设备：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="deviceChooseComboBox">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>15</pointsize>
+              </font>
+             </property>
+             <item>
+              <property name="text">
+               <string>设备</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>1(上升列)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>2(下降列)</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QLabel" name="label_11">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>15</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>选择型号：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="modleChooseComboBox">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>15</pointsize>
+              </font>
+             </property>
+             <item>
+              <property name="text">
+               <string>型号</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>小版</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>中版</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>大版</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QLabel" name="label_7">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>15</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>步长距离：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="stepChooseSpinBox">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>15</pointsize>
+              </font>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_13">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>15</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string> 单位：m</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="QLabel" name="label_12">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>15</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>速度：</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QDoubleSpinBox" name="speedSpinBox">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>15</pointsize>
+              </font>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_24">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>15</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string> 单位：m/s</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_12">
+           <item>
+            <widget class="QPushButton" name="BtnSingleStepTest">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>15</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton{background-color: rgb(225, 225, 225);border:1px groove gray;border-radius:4px;padding:1px 4px;border-style: outset;}
+QPushButton:hover{background-color:rgb(229, 241, 251); color: black;}
+QPushButton:pressed{background-color:rgb(204, 228, 247);border-style: inset;}</string>
+             </property>
+             <property name="text">
+              <string>启动单步测试</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="BtnSuccessiveTest">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>15</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton{background-color: rgb(225, 225, 225);border:1px groove gray;border-radius:4px;padding:1px 4px;border-style: outset;}
+QPushButton:hover{background-color:rgb(229, 241, 251); color: black;}
+QPushButton:pressed{background-color:rgb(204, 228, 247);border-style: inset;}</string>
+             </property>
+             <property name="text">
+              <string>启动连续测试</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="BtnUniformSpeedTest">
+             <property name="font">
+              <font>
+               <family>Arial</family>
+               <pointsize>15</pointsize>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QPushButton{background-color: rgb(225, 225, 225);border:1px groove gray;border-radius:4px;padding:1px 4px;border-style: outset;}
+QPushButton:hover{background-color:rgb(229, 241, 251); color: black;}
+QPushButton:pressed{background-color:rgb(204, 228, 247);border-style: inset;}</string>
+             </property>
+             <property name="text">
+              <string>启动匀速测试</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QPushButton" name="BtnBaudDetect">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton{background-color: rgb(225, 225, 225);border:1px groove gray;border-radius:4px;padding:1px 4px;border-style: outset;}
+QPushButton:hover{background-color:rgb(229, 241, 251); color: black;}
+QPushButton:pressed{background-color:rgb(204, 228, 247);border-style: inset;}</string>
+           </property>
+           <property name="text">
+            <string>防夹传感器触发测试</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="BtnCheckConfig">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton{background-color: rgb(225, 225, 225);border:1px groove gray;border-radius:4px;padding:1px 4px;border-style: outset;}
+QPushButton:hover{background-color:rgb(229, 241, 251); color: black;}
+QPushButton:pressed{background-color:rgb(204, 228, 247);border-style: inset;}</string>
+           </property>
+           <property name="text">
+            <string>读取提升机配置</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
+            </font>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>400</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox_5">
+        <property name="font">
+         <font>
+          <family>Arial</family>
+          <pointsize>15</pointsize>
+         </font>
+        </property>
+        <property name="title">
+         <string>举升机配置区：</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
          <item>
           <widget class="QPushButton" name="BtnCheckLifterConfig">
            <property name="font">
             <font>
-             <pointsize>17</pointsize>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
             </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton{background-color: rgb(225, 225, 225);border:1px groove gray;border-radius:4px;padding:1px 4px;border-style: outset;}
+QPushButton:hover{background-color:rgb(229, 241, 251); color: black;}
+QPushButton:pressed{background-color:rgb(204, 228, 247);border-style: inset;}</string>
            </property>
            <property name="text">
             <string>读取举升机配置</string>
@@ -297,34 +578,46 @@
           </widget>
          </item>
          <item>
+          <spacer name="horizontalSpacer">
+           <property name="font">
+            <font>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
+            </font>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>288</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
           <widget class="QPushButton" name="BtnConfigLifter">
            <property name="font">
             <font>
-             <pointsize>17</pointsize>
+             <family>Arial</family>
+             <pointsize>15</pointsize>
             </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QPushButton{background-color: rgb(225, 225, 225);border:1px groove gray;border-radius:4px;padding:1px 4px;border-style: outset;}
+QPushButton:hover{background-color:rgb(229, 241, 251); color: black;}
+QPushButton:pressed{background-color:rgb(204, 228, 247);border-style: inset;}</string>
            </property>
            <property name="text">
             <string>配置举升机</string>
            </property>
           </widget>
          </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>273</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
         </layout>
-       </item>
-      </layout>
-     </widget>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -333,7 +626,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1378</width>
+     <width>1208</width>
      <height>24</height>
     </rect>
    </property>
@@ -349,8 +642,8 @@
    <slot>changenodeId()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>710</x>
-     <y>563</y>
+     <x>444</x>
+     <y>913</y>
     </hint>
     <hint type="destinationlabel">
      <x>646</x>
@@ -365,8 +658,8 @@
    <slot>ProtectSensor()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>710</x>
-     <y>654</y>
+     <x>444</x>
+     <y>994</y>
     </hint>
     <hint type="destinationlabel">
      <x>733</x>
@@ -381,8 +674,8 @@
    <slot>detectBaud()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1356</x>
-     <y>737</y>
+     <x>945</x>
+     <y>1009</y>
     </hint>
     <hint type="destinationlabel">
      <x>733</x>
@@ -397,8 +690,8 @@
    <slot>configDriver()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>487</x>
-     <y>729</y>
+     <x>221</x>
+     <y>1040</y>
     </hint>
     <hint type="destinationlabel">
      <x>516</x>
@@ -407,34 +700,18 @@
    </hints>
   </connection>
   <connection>
-   <sender>BtnTestLifter</sender>
+   <sender>BtnSuccessiveTest</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>testLifter()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1356</x>
-     <y>696</y>
+     <x>793</x>
+     <y>960</y>
     </hint>
     <hint type="destinationlabel">
      <x>733</x>
      <y>508</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>lineEdit</sender>
-   <signal>textChanged(QString)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>inputRotationValue()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1350</x>
-     <y>653</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>733</x>
-     <y>451</y>
     </hint>
    </hints>
   </connection>
@@ -445,8 +722,8 @@
    <slot>checkConfig()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1356</x>
-     <y>502</y>
+     <x>945</x>
+     <y>1050</y>
     </hint>
     <hint type="destinationlabel">
      <x>733</x>
@@ -461,8 +738,8 @@
    <slot>checkConfigModbus()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>713</x>
-     <y>502</y>
+     <x>447</x>
+     <y>833</y>
     </hint>
     <hint type="destinationlabel">
      <x>729</x>
@@ -477,8 +754,8 @@
    <slot>readLifterConfig()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>879</x>
-     <y>496</y>
+     <x>1390</x>
+     <y>776</y>
     </hint>
     <hint type="destinationlabel">
      <x>1065</x>
@@ -493,8 +770,8 @@
    <slot>configLifter()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>932</x>
-     <y>542</y>
+     <x>1390</x>
+     <y>1050</y>
     </hint>
     <hint type="destinationlabel">
      <x>1062</x>
@@ -509,8 +786,8 @@
    <slot>nodeIdDetectionModbus()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>565</x>
-     <y>725</y>
+     <x>441</x>
+     <y>1040</y>
     </hint>
     <hint type="destinationlabel">
      <x>737</x>
