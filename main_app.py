@@ -85,11 +85,9 @@ class testContinousStepThread(QThread):
     finished = pyqtSignal()
     def run(self):
         self.started.emit()
-        mainUI.textBrowser.append(f"开始检测配置值")
-        mainUI.textBrowser.append(f"------------------------")
-        checkLifterConfigInfo(PortNumber)
-        mainUI.textBrowser.append(f"------------------------")
-        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
+        network = initCanInterface(PortNumber, Baud)
+        runContinuousStep(network)
+        network.disconnect()
         self.finished.emit()
 
 #####################################################
@@ -393,7 +391,7 @@ def runSingleStep(network):
 def runContinuousStep(network):
     try:
         deltaMotorNode = runSingleStep(network)
-        while (True):
+        while (IsRun):
             v = deltaMotorNode.sdo[0x606c].read()
             while (v != 0):
                 current_position = deltaMotorNode.sdo[0x6064].read()
@@ -403,10 +401,11 @@ def runContinuousStep(network):
             # check current running state of The motor
             # the specific meaning of state code refere to delta documentation
             time.sleep(1)
-            deltaMotorNode.sdo[0x6040].write(0x06)
-            deltaMotorNode.sdo[0x6040].write(0x07)
-            deltaMotorNode.sdo[0x6040].write(0x0F)
-            deltaMotorNode.sdo[0x6040].write(0x7F)
+            if IsRun == True:
+                deltaMotorNode.sdo[0x6040].write(0x06)
+                deltaMotorNode.sdo[0x6040].write(0x07)
+                deltaMotorNode.sdo[0x6040].write(0x0F)
+                deltaMotorNode.sdo[0x6040].write(0x7F)
     except Exception:
         mainUI.textBrowser.append("提升机测试失败，请检查以下几点")
         mainUI.textBrowser.append("1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
@@ -668,6 +667,10 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.BtnNodeIdDetectionModbus.setDisabled(isDisabled)
         self.BtnBaudDetect.setDisabled(isDisabled)
         self.BtnCheckConfig.setDisabled(isDisabled)
+        self.BtnSuccessiveTest.setDisabled(isDisabled)
+        self.BtnSingleStepTest.setDisabled(isDisabled)
+        self.BtnUniformSpeedTest.setDisabled(isDisabled)
+        self.deviceChooseComboBox.setDisabled(isDisabled)
 
     def detectBaud(self):
         searchBaud()
@@ -681,9 +684,16 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.configThread.start()
 
     def testContinousStep(self):
-        network = initCanInterface(PortNumber, Baud)
-        runContinuousStep(network)
-        network.disconnect()
+        global IsRun
+        if (self.sender().text() == "启动连续测试"):
+            IsRun = True
+            self.runContinousTh = testContinousStepThread()
+            self.runContinousTh.start()
+            self.sender().setText("关闭连续测试")
+        else:
+            IsRun = False
+            self.sender().setText("启动连续测试")
+
 
     def testUniformSpeed(self):
         network = initCanInterface(PortNumber, Baud)
