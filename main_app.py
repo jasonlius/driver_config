@@ -82,10 +82,12 @@ class CheckLifterConfigThread(QThread):
 
 class testContinousStepThread(QThread):
     started = pyqtSignal()
+    running = pyqtSignal()
     finished = pyqtSignal()
     def run(self):
         self.started.emit()
         network = initCanInterface(PortNumber, Baud)
+        self.running.emit()
         runContinuousStep(network)
         network.disconnect()
         self.finished.emit()
@@ -387,6 +389,7 @@ def runSingleStep(network):
     except Exception:
         mainUI.textBrowser.append("提升机测试失败，请检查以下几点")
         mainUI.textBrowser.append("1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
+        mainUI.BtnSuccessiveTest.setText("启动连续测试")
         traceback.print_exc()
 def runContinuousStep(network):
     try:
@@ -409,6 +412,7 @@ def runContinuousStep(network):
     except Exception:
         mainUI.textBrowser.append("提升机测试失败，请检查以下几点")
         mainUI.textBrowser.append("1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
+        mainUI.BtnSuccessiveTest.setText("启动连续测试")
         traceback.print_exc()
 
 def testVelocityMode(network):
@@ -667,10 +671,10 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.BtnNodeIdDetectionModbus.setDisabled(isDisabled)
         self.BtnBaudDetect.setDisabled(isDisabled)
         self.BtnCheckConfig.setDisabled(isDisabled)
-        self.BtnSuccessiveTest.setDisabled(isDisabled)
         self.BtnSingleStepTest.setDisabled(isDisabled)
         self.BtnUniformSpeedTest.setDisabled(isDisabled)
         self.deviceChooseComboBox.setDisabled(isDisabled)
+        self.BtnSuccessiveTest.setDisabled(isDisabled)
 
     def detectBaud(self):
         searchBaud()
@@ -682,18 +686,6 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.configThread.finished.connect(self.enbleALlBtn)
         self.configThread.informationAction.connect(self.popUpReminder)
         self.configThread.start()
-
-    def testContinousStep(self):
-        global IsRun
-        if (self.sender().text() == "启动连续测试"):
-            IsRun = True
-            self.runContinousTh = testContinousStepThread()
-            self.runContinousTh.start()
-            self.sender().setText("关闭连续测试")
-        else:
-            IsRun = False
-            self.sender().setText("启动连续测试")
-
 
     def testUniformSpeed(self):
         network = initCanInterface(PortNumber, Baud)
@@ -716,14 +708,37 @@ class MyWindow(QMainWindow,Ui_MainWindow):
 
     def setSpeedValue(self):
         self.textBrowser.append("设置速度被点击了")
-     #--------------------------------------------------------
+
+    # --------------------------------------------------------
+    # 创建一个新线程来测试连续步长运行
+    global isNotHaveTh
+    isNotHaveTh = True
+    def testContinousStep(self):
+        global IsRun
+        global isNotHaveTh
+        if (self.sender().text() == "启动连续测试"):
+            IsRun = True
+            if(isNotHaveTh):
+                self.runContinousTh = testContinousStepThread()
+                isNotHaveTh = False
+                self.runContinousTh.start()
+                self.sender().setText("关闭连续测试")
+                self.runContinousTh.started.connect(self.disbleAllBtn)
+                self.runContinousTh.finished.connect(self.enbleALlBtn)
+                self.runContinousTh.running.connect(self.disbleAllBtnEnableBtnSuccessiveTest)
+        else:
+            IsRun = False
+            self.sender().setText("启动连续测试")
+    # --------------------------------------------------------
+
+    #--------------------------------------------------------
     #创建一个新线程来查看驱动器配置
     def checkConfigModbus(self):
         self.CheckconfigThread = CheckConfigModbusThread()
         self.CheckconfigThread.started.connect(self.disbleAllBtn)
         self.CheckconfigThread.finished.connect(self.enbleALlBtn)
         self.CheckconfigThread.start()
-     #----------------------------------------------------------
+    #----------------------------------------------------------
 
     #--------------------------------------------------------
     #创建一个新线程来检测节点id
@@ -755,7 +770,13 @@ class MyWindow(QMainWindow,Ui_MainWindow):
     # ----------------------------------------------------------
     def disbleAllBtn(self):
         self.disableAllButton(True)
+
+    def disbleAllBtnEnableBtnSuccessiveTest(self):
+        self.disableAllButton(True)
+        self.BtnSuccessiveTest.setDisabled(False)
     def enbleALlBtn(self):
+        global isNotHaveTh
+        isNotHaveTh = True
         self.disableAllButton(False)
         if self.SensorDetectcomboBox.currentText() == "请选择":
             self.BtnConfig.setDisabled(True)
