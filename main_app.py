@@ -357,10 +357,9 @@ def initCanInterface(portNumber,baud):
 
 #控制驱动器，使电机按照位置模式运行。
 #A2驱动器canopen通信协议控制，参考台达A2CANOpen英文文档中profile position mode一节
-def testPositionMode(portNumber):
+def testPositionMode(network):
     try:
         mainUI.textBrowser.append("开始测试提升机电机运转")
-        network = initCanInterface(portNumber,Baud)
         deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
         deltaMotorNode.nmt.state = 'OPERATIONAL'
         deltaMotorNode.sdo[0x6060].write(0x01)
@@ -375,21 +374,36 @@ def testPositionMode(portNumber):
         deltaMotorNode.sdo[0x6040].write(0x7F)
         mainUI.textBrowser.append("提升机测试运转成功")
         #check current position of The motor（The unit is PPU）
-        v = deltaMotorNode.sdo[0x606c].read()
-        while(v != 0):
-            current_position =  deltaMotorNode.sdo[0x6064].read()
-            mainUI.textBrowser.append(f"电机当前位置为:{current_position}PPU")
+        while(True):
             v = deltaMotorNode.sdo[0x606c].read()
-            mainUI.textBrowser.append(f"电机当前速度为:{v}/ppu")
-        #check current running state of The motor
-        # the specific meaning of state code refere to delta documentation
-        network.disconnect()
-        return v
+            while(v != 0):
+                current_position =  deltaMotorNode.sdo[0x6064].read()
+                mainUI.textBrowser.append(f"电机当前位置为:{current_position}PPU")
+                v = deltaMotorNode.sdo[0x606c].read()
+                mainUI.textBrowser.append(f"电机当前速度为:{v}/ppu")
+            #check current running state of The motor
+            # the specific meaning of state code refere to delta documentation
+            time.sleep(1)
+            deltaMotorNode.sdo[0x6040].write(0x06)
+            deltaMotorNode.sdo[0x6040].write(0x07)
+            deltaMotorNode.sdo[0x6040].write(0x0F)
+            deltaMotorNode.sdo[0x6040].write(0x7F)
     except Exception:
         mainUI.textBrowser.append("提升机测试失败，请检查以下几点")
         mainUI.textBrowser.append("1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
         traceback.print_exc()
-
+def testVelocityMode(network):
+    mainUI.textBrowser.append("开始测试速度模式")
+    deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
+    deltaMotorNode.nmt.state = 'OPERATIONAL'
+    deltaMotorNode.sdo[0x6060].write(0x03)
+    # stateWords operation to enable servermotor
+    deltaMotorNode.sdo[0x6040].write(0x06)
+    deltaMotorNode.sdo[0x6040].write(0x07)
+    deltaMotorNode.sdo[0x6040].write(0x0F)
+    deltaMotorNode.sdo[0x6083].write(300)
+    deltaMotorNode.sdo[0x6084].write(300)
+    deltaMotorNode.sdo[0x60FF].write(0)
 def findDevice(baud):
     global NodeID
     isFindDevice = False
@@ -583,9 +597,8 @@ class MyWindow(QMainWindow,Ui_MainWindow):
 
     def changenodeId(self):
         global NodeID
-        self.BtnTestLifter.setDisabled(False)
+        self.BtnSuccessiveTest.setDisabled(False)
         self.SensorDetectcomboBox.setDisabled(False)
-        self.lineEdit.setDisabled(True)
         if self.canopenIdComboBox.currentText() == "1(上升列)":
             NodeID = 0x1
         elif self.canopenIdComboBox.currentText() == "2(下降列)":
@@ -614,7 +627,7 @@ class MyWindow(QMainWindow,Ui_MainWindow):
     def disableButton(self):
         self.SensorDetectcomboBox.setDisabled(True)
         self.BtnConfig.setDisabled(True)
-        self.BtnTestLifter.setDisabled(True)
+        self.BtnSuccessiveTest.setDisabled(True)
         self.BtnBaudDetect.setDisabled(True)
         self.BtnCheckConfig.setDisabled(True)
 
@@ -625,14 +638,14 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.BtnConfigLifter.setDisabled(isDisabled)
         self.BtnCheckLifterConfig.setDisabled(isDisabled)
         self.BtnCheckConfigModbus.setDisabled(isDisabled)
-        self.BtnTestLifter.setDisabled(isDisabled)
+        self.BtnSuccessiveTest.setDisabled(isDisabled)
         self.BtnNodeIdDetectionModbus.setDisabled(isDisabled)
         self.BtnBaudDetect.setDisabled(isDisabled)
         self.BtnCheckConfig.setDisabled(isDisabled)
 
     def detectBaud(self):
         searchBaud()
-        self.BtnTestLifter.setDisabled(False)
+        self.BtnSuccessiveTest.setDisabled(False)
 
     def configDriver(self):
         self.configThread = configDeltaMotorThread()
@@ -642,11 +655,12 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.configThread.start()
 
     def testLifter(self):
-        v = testPositionMode(PortNumber)
-        while v == 0:
-            time.sleep(2)
-            v = testPositionMode(PortNumber)
+        network = initCanInterface(PortNumber, Baud)
+        testPositionMode(network)
 
+    def testUniformSpeed(self):
+        network = initCanInterface(PortNumber, Baud)
+        testVelocityMode(network)
 
     def checkConfig(self):
         self.textBrowser.append(f"开始检测配置值")
