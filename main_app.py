@@ -19,7 +19,7 @@ from PyQt5.QtWidgets import QMessageBox
 #####################################################
 #为了处理后台时间较长的程序
 class NodeIdDetetctThread(QThread):
-    # 通过类成员对象定义信号对象  
+    # 通过类成员对象定义信号对象
     started = pyqtSignal()
     finished = pyqtSignal()
     # 处理要做的业务逻辑
@@ -41,7 +41,7 @@ class configDeltaMotorThread(QThread):
             self.informationAction.emit("配置成功，请重启驱动器")
         self.finished.emit()
 class CheckConfigModbusThread(QThread):
-    # 通过类成员对象定义信号对象  
+    # 通过类成员对象定义信号对象
     started = pyqtSignal()
     finished = pyqtSignal()
     # 处理要做的业务逻辑
@@ -54,7 +54,7 @@ class CheckConfigModbusThread(QThread):
         mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
         self.finished.emit()
 class configLifterThread(QThread):
-    # 通过类成员对象定义信号对象  
+    # 通过类成员对象定义信号对象
     started = pyqtSignal()
     finished = pyqtSignal()
     informationAction = pyqtSignal(str)
@@ -67,7 +67,7 @@ class configLifterThread(QThread):
         self.finished.emit()
 
 class CheckLifterConfigThread(QThread):
-    # 通过类成员对象定义信号对象  
+    # 通过类成员对象定义信号对象
     started = pyqtSignal()
     finished = pyqtSignal()
     # 处理要做的业务逻辑
@@ -79,7 +79,19 @@ class CheckLifterConfigThread(QThread):
         mainUI.textBrowser.append(f"------------------------")
         mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
         self.finished.emit()
-        
+
+class testContinousStepThread(QThread):
+    started = pyqtSignal()
+    finished = pyqtSignal()
+    def run(self):
+        self.started.emit()
+        mainUI.textBrowser.append(f"开始检测配置值")
+        mainUI.textBrowser.append(f"------------------------")
+        checkLifterConfigInfo(PortNumber)
+        mainUI.textBrowser.append(f"------------------------")
+        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
+        self.finished.emit()
+
 #####################################################
 #                    功能函数区                       #
 #####################################################
@@ -228,7 +240,7 @@ def configDeltaMotor(portNumber):
         traceback.print_exc()
         isSuccessful = False
         return  isSuccessful
-        
+
 def checkDeltaConfigInfo(portNumber):
     for i in range(3):
         id = detectModBusID()
@@ -277,8 +289,8 @@ def readDeltaConfig(instrument):
         mainUI.textBrowser.append(f"p3-01 = {hex(p3_01)}")
         instrument.serial.close()
     except Exception:
-        mainUI.textBrowser.append("参数读取失败，请重试,请排查串口是否错误！")
-       
+        mainUI.textBrowser.append("<font color=\"#FF0000\">"+"参数读取失败，请重试,请排查串口是否错误！")
+
 
 def checkLifterConfigInfo(portNumber):
     for i in range(3):
@@ -349,7 +361,7 @@ def readP2_10toP2_17Argu(instrument):
 
 #初始化Canopen socket
 def initCanInterface(portNumber,baud):
-    mainUI.textBrowser.append("初始化CanOpen接口")  
+    mainUI.textBrowser.append("初始化CanOpen接口")
     network = canopen.Network()
     network.connect(bustype='slcan', channel=portNumber, bitrate=baud)
     mainUI.textBrowser.append("CanOpen接口初始化完成")
@@ -357,7 +369,7 @@ def initCanInterface(portNumber,baud):
 
 #控制驱动器，使电机按照位置模式运行。
 #A2驱动器canopen通信协议控制，参考台达A2CANOpen英文文档中profile position mode一节
-def testPositionMode(network):
+def runSingleStep(network):
     try:
         mainUI.textBrowser.append("开始测试提升机电机运转")
         deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
@@ -373,15 +385,22 @@ def testPositionMode(network):
         deltaMotorNode.sdo[0x6040].write(0x0F)
         deltaMotorNode.sdo[0x6040].write(0x7F)
         mainUI.textBrowser.append("提升机测试运转成功")
-        #check current position of The motor（The unit is PPU）
-        while(True):
+        return  deltaMotorNode
+    except Exception:
+        mainUI.textBrowser.append("提升机测试失败，请检查以下几点")
+        mainUI.textBrowser.append("1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
+        traceback.print_exc()
+def runContinuousStep(network):
+    try:
+        deltaMotorNode = runSingleStep(network)
+        while (True):
             v = deltaMotorNode.sdo[0x606c].read()
-            while(v != 0):
-                current_position =  deltaMotorNode.sdo[0x6064].read()
+            while (v != 0):
+                current_position = deltaMotorNode.sdo[0x6064].read()
                 mainUI.textBrowser.append(f"电机当前位置为:{current_position}PPU")
                 v = deltaMotorNode.sdo[0x606c].read()
                 mainUI.textBrowser.append(f"电机当前速度为:{v}/ppu")
-            #check current running state of The motor
+            # check current running state of The motor
             # the specific meaning of state code refere to delta documentation
             time.sleep(1)
             deltaMotorNode.sdo[0x6040].write(0x06)
@@ -392,6 +411,7 @@ def testPositionMode(network):
         mainUI.textBrowser.append("提升机测试失败，请检查以下几点")
         mainUI.textBrowser.append("1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
         traceback.print_exc()
+
 def testVelocityMode(network):
     mainUI.textBrowser.append("开始测试速度模式")
     deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
@@ -403,7 +423,7 @@ def testVelocityMode(network):
     deltaMotorNode.sdo[0x6040].write(0x0F)
     deltaMotorNode.sdo[0x6083].write(300)
     deltaMotorNode.sdo[0x6084].write(300)
-    deltaMotorNode.sdo[0x60FF].write(0)
+    deltaMotorNode.sdo[0x60FF].write(2014)
 def findDevice(baud):
     global NodeID
     isFindDevice = False
@@ -485,7 +505,7 @@ def detectModBusID():
                 mainUI.textBrowser.append("错误，串口关闭失败，请检查是否存在串口")
             traceback.print_exc()
             continue
-    mainUI.textBrowser.append("检测失败！检查是否串口选择错误，或者连线不牢")
+    mainUI.textBrowser.append( "<font color=\"#FF0000\">"+"检测失败！检查是否串口选择错误，或者连线不牢")
     return None
 
 
@@ -597,18 +617,24 @@ class MyWindow(QMainWindow,Ui_MainWindow):
 
     def changenodeId(self):
         global NodeID
-        self.BtnSuccessiveTest.setDisabled(False)
-        self.SensorDetectcomboBox.setDisabled(False)
-        if self.canopenIdComboBox.currentText() == "1(上升列)":
+        if self.sender().objectName() == "canopenIdComboBox":
+            self.BtnSuccessiveTest.setDisabled(False)
+            self.SensorDetectcomboBox.setDisabled(False)
+        if self.sender().currentText() == "1(上升列)":
             NodeID = 0x1
-        elif self.canopenIdComboBox.currentText() == "2(下降列)":
+        elif self.sender().currentText() == "2(下降列)":
             NodeID = 0x2
         else:
             QMessageBox.warning(self,"警告","请选择设备")
             self.SensorDetectcomboBox.setDisabled(True)
-            if self.SensorDetectcomboBox.currentText() != "请选择":
-                self.BtnConfig.setDisabled(True)
-        self.textBrowser.append(f"canopenID为{NodeID}")
+            if self.sender().objectName() == "canopenIdComboBox":
+                if self.SensorDetectcomboBox.currentText() != "请选择":
+                    self.BtnConfig.setDisabled(True)
+            return
+        self.textBrowser.append(f"已选择设备:{self.sender().currentText()}")
+
+    def changeModelNumber(self):
+        self.textBrowser.append(f"按键被点击:{self.sender().currentText()}")
 
     def ProtectSensor(self):
         global SensorValue
@@ -654,13 +680,20 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.configThread.informationAction.connect(self.popUpReminder)
         self.configThread.start()
 
-    def testLifter(self):
+    def testContinousStep(self):
         network = initCanInterface(PortNumber, Baud)
-        testPositionMode(network)
+        runContinuousStep(network)
+        network.disconnect()
 
     def testUniformSpeed(self):
         network = initCanInterface(PortNumber, Baud)
         testVelocityMode(network)
+        network.disconnect()
+
+    def testSingleStep(self):
+        network = initCanInterface(PortNumber, Baud)
+        runSingleStep(network)
+        network.disconnect()
 
     def checkConfig(self):
         self.textBrowser.append(f"开始检测配置值")
@@ -668,14 +701,11 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         checkCurrentConfig()
         self.textBrowser.append(f"------------------------")
 
-    def inputRotationValue(self):
-        global RotationValue
-        try:
-            RotationValue = int(self.lineEdit.text())
-        except Exception:
-            mainUI.textBrowser.append("错误，请输入数字")
-        print(RotationValue)
+    def setStepValue(self):
+        self.textBrowser.append("设置步长值被点击了")
 
+    def setSpeedValue(self):
+        self.textBrowser.append("设置速度被点击了")
      #--------------------------------------------------------
     #创建一个新线程来查看驱动器配置
     def checkConfigModbus(self):
