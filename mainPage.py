@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1208, 1016)
+        MainWindow.resize(866, 850)
         font = QtGui.QFont()
         font.setFamily("Academy Engraved LET")
         MainWindow.setFont(font)
@@ -321,7 +321,7 @@ class Ui_MainWindow(object):
         self.gridLayout_2.addLayout(self.horizontalLayout_14, 1, 0, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1208, 24))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 866, 24))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -333,12 +333,18 @@ class Ui_MainWindow(object):
         self.SensorDetectcomboBox.activated['QString'].connect(MainWindow.ProtectSensor) # type: ignore
         self.BtnBaudDetect.clicked.connect(MainWindow.detectBaud) # type: ignore
         self.BtnConfig.clicked.connect(MainWindow.configDriver) # type: ignore
-        self.BtnSuccessiveTest.clicked.connect(MainWindow.testLifter) # type: ignore
+        self.BtnSuccessiveTest.clicked.connect(MainWindow.testContinousStep) # type: ignore
         self.BtnCheckConfig.clicked.connect(MainWindow.checkConfig) # type: ignore
         self.BtnCheckConfigModbus.clicked.connect(MainWindow.checkConfigModbus) # type: ignore
         self.BtnCheckLifterConfig.clicked.connect(MainWindow.readLifterConfig) # type: ignore
         self.BtnConfigLifter.clicked.connect(MainWindow.configLifter) # type: ignore
         self.BtnNodeIdDetectionModbus.clicked.connect(MainWindow.nodeIdDetectionModbus) # type: ignore
+        self.BtnUniformSpeedTest.clicked.connect(MainWindow.testUniformSpeed) # type: ignore
+        self.deviceChooseComboBox.activated['QString'].connect(MainWindow.changenodeId) # type: ignore
+        self.modleChooseComboBox.activated['QString'].connect(MainWindow.changeModelNumber) # type: ignore
+        self.stepChooseSpinBox.valueChanged['QString'].connect(MainWindow.setStepValue) # type: ignore
+        self.speedSpinBox.valueChanged['double'].connect(MainWindow.setSpeedValue) # type: ignore
+        self.BtnSingleStepTest.clicked.connect(MainWindow.testSingleStep) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -375,7 +381,7 @@ class Ui_MainWindow(object):
         self.BtnSuccessiveTest.setText(_translate("MainWindow", "启动连续测试"))
         self.BtnUniformSpeedTest.setText(_translate("MainWindow", "启动匀速测试"))
         self.BtnBaudDetect.setText(_translate("MainWindow", "防夹传感器触发测试"))
-        self.BtnCheckConfig.setText(_translate("MainWindow", "读取提升机配置"))
+        self.BtnCheckConfig.setText(_translate("MainWindow", "检测提升机配置"))
         self.groupBox_5.setTitle(_translate("MainWindow", "举升机配置区："))
         self.BtnCheckLifterConfig.setText(_translate("MainWindow", "读取举升机配置"))
         self.BtnConfigLifter.setText(_translate("MainWindow", "配置举升机"))
