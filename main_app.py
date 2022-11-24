@@ -92,6 +92,25 @@ class testContinousStepThread(QThread):
         network.disconnect()
         self.finished.emit()
 
+class testSingleStepThread(QThread):
+    started = pyqtSignal()
+    finished = pyqtSignal()
+    def run(self):
+        self.started.emit()
+        network = initCanInterface(PortNumber, Baud)
+        runSingleStep(network)
+        network.disconnect()
+        self.finished.emit()
+
+class testUniformSpeedThread(QThread):
+    started = pyqtSignal()
+    finished = pyqtSignal()
+    def run(self):
+        self.started.emit()
+        network = initCanInterface(PortNumber, Baud)
+        testVelocityMode(network)
+        network.disconnect()
+        self.finished.emit()
 #####################################################
 #                    功能函数区                       #
 #####################################################
@@ -387,14 +406,15 @@ def runSingleStep(network):
         mainUI.textBrowser.append("提升机测试运转成功")
         return  deltaMotorNode
     except Exception:
-        mainUI.textBrowser.append("提升机测试失败，请检查以下几点")
-        mainUI.textBrowser.append("1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
+        mainUI.textBrowser.append("<font color=\"#FF0000\">"+"提升机测试失败，请检查以下几点\n" +
+                                  "1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
+        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
         mainUI.BtnSuccessiveTest.setText("启动连续测试")
         traceback.print_exc()
 def runContinuousStep(network):
     try:
         deltaMotorNode = runSingleStep(network)
-        while (IsRun):
+        while (IsRunning):
             v = deltaMotorNode.sdo[0x606c].read()
             while (v != 0):
                 current_position = deltaMotorNode.sdo[0x6064].read()
@@ -404,29 +424,37 @@ def runContinuousStep(network):
             # check current running state of The motor
             # the specific meaning of state code refere to delta documentation
             time.sleep(1)
-            if IsRun == True:
+            if IsRunning == True:
                 deltaMotorNode.sdo[0x6040].write(0x06)
                 deltaMotorNode.sdo[0x6040].write(0x07)
                 deltaMotorNode.sdo[0x6040].write(0x0F)
                 deltaMotorNode.sdo[0x6040].write(0x7F)
     except Exception:
-        mainUI.textBrowser.append("提升机测试失败，请检查以下几点")
-        mainUI.textBrowser.append("1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
+        mainUI.textBrowser.append("<font color=\"#FF0000\">"+"提升机测试失败，请检查以下几点\n"+
+                                  "1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
+        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
         mainUI.BtnSuccessiveTest.setText("启动连续测试")
         traceback.print_exc()
 
 def testVelocityMode(network):
-    mainUI.textBrowser.append("开始测试速度模式")
-    deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
-    deltaMotorNode.nmt.state = 'OPERATIONAL'
-    deltaMotorNode.sdo[0x6060].write(0x03)
-    # stateWords operation to enable servermotor
-    deltaMotorNode.sdo[0x6040].write(0x06)
-    deltaMotorNode.sdo[0x6040].write(0x07)
-    deltaMotorNode.sdo[0x6040].write(0x0F)
-    deltaMotorNode.sdo[0x6083].write(300)
-    deltaMotorNode.sdo[0x6084].write(300)
-    deltaMotorNode.sdo[0x60FF].write(2014)
+    try:
+        mainUI.textBrowser.append("开始测试速度模式")
+        deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
+        deltaMotorNode.nmt.state = 'OPERATIONAL'
+        deltaMotorNode.sdo[0x6060].write(0x03)
+        # stateWords operation to enable servermotor
+        deltaMotorNode.sdo[0x6040].write(0x06)
+        deltaMotorNode.sdo[0x6040].write(0x07)
+        deltaMotorNode.sdo[0x6040].write(0x0F)
+        deltaMotorNode.sdo[0x6083].write(300)
+        deltaMotorNode.sdo[0x6084].write(300)
+        deltaMotorNode.sdo[0x60FF].write(2014)
+    except Exception:
+        mainUI.textBrowser.append("<font color=\"#FF0000\">"+"提升机测试失败，请检查以下几点\n"+
+                                  "1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
+        mainUI.textBrowser.moveCursor(QtGui.QTextCursor.End)
+        mainUI.BtnUniformSpeedTest.setText("启动匀速测试")
+        traceback.print_exc()
 def findDevice(baud):
     global NodeID
     isFindDevice = False
@@ -508,7 +536,7 @@ def detectModBusID():
                 mainUI.textBrowser.append("错误，串口关闭失败，请检查是否存在串口")
             traceback.print_exc()
             continue
-    mainUI.textBrowser.append( "<font color=\"#FF0000\">"+"检测失败！检查是否串口选择错误，或者连线不牢")
+    mainUI.textBrowser.append("<font color=\"#FF0000\">"+"检测失败！检查是否串口选择错误，或者连线不牢")
     return None
 
 
@@ -687,16 +715,6 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.configThread.informationAction.connect(self.popUpReminder)
         self.configThread.start()
 
-    def testUniformSpeed(self):
-        network = initCanInterface(PortNumber, Baud)
-        testVelocityMode(network)
-        network.disconnect()
-
-    def testSingleStep(self):
-        network = initCanInterface(PortNumber, Baud)
-        runSingleStep(network)
-        network.disconnect()
-
     def checkConfig(self):
         self.textBrowser.append(f"开始检测配置值")
         self.textBrowser.append(f"------------------------")
@@ -714,10 +732,10 @@ class MyWindow(QMainWindow,Ui_MainWindow):
     global isNotHaveTh
     isNotHaveTh = True
     def testContinousStep(self):
-        global IsRun
+        global IsRunning
         global isNotHaveTh
         if (self.sender().text() == "启动连续测试"):
-            IsRun = True
+            IsRunning = True
             if(isNotHaveTh):
                 self.runContinousTh = testContinousStepThread()
                 isNotHaveTh = False
@@ -725,12 +743,38 @@ class MyWindow(QMainWindow,Ui_MainWindow):
                 self.sender().setText("关闭连续测试")
                 self.runContinousTh.started.connect(self.disbleAllBtn)
                 self.runContinousTh.finished.connect(self.enbleALlBtn)
-                self.runContinousTh.running.connect(self.disbleAllBtnEnableBtnSuccessiveTest)
+                self.runContinousTh.running.connect(self.enableBtnSuccessiveTest)
         else:
-            IsRun = False
+            IsRunning = False
             self.sender().setText("启动连续测试")
     # --------------------------------------------------------
 
+    # --------------------------------------------------------
+    # 创建一个新线程来测试单步步长运行
+    def testSingleStep(self):
+        self.runSingleTh = testSingleStepThread()
+        self.runSingleTh.start()
+        self.runSingleTh.started.connect(self.disbleAllBtn)
+        self.runSingleTh.finished.connect(self.enbleALlBtn)
+
+    # --------------------------------------------------------
+
+    # --------------------------------------------------------
+    # 创建一个新线程来测试匀速运行
+    def testUniformSpeed(self):
+        if (self.sender().text() == "启动匀速测试"):
+            self.testUniformSpeedTH = testUniformSpeedThread()
+            self.BtnUniformSpeedTest.setText("关闭匀速测试")
+            self.testUniformSpeedTH.start()
+            self.testUniformSpeedTH.started.connect(self.disbleAllBtn)
+            self.testUniformSpeedTH.finished.connect(self.SetSpecificAction)
+        else:
+            self.sender().setText("启动匀速测试")
+    def SetSpecificAction(self):
+        if self.BtnUniformSpeedTest.text() == "关闭匀速测试":
+            self.BtnUniformSpeedTest.setDisabled(False)
+        else:
+            self.enbleALlBtn()
     #--------------------------------------------------------
     #创建一个新线程来查看驱动器配置
     def checkConfigModbus(self):
@@ -771,8 +815,7 @@ class MyWindow(QMainWindow,Ui_MainWindow):
     def disbleAllBtn(self):
         self.disableAllButton(True)
 
-    def disbleAllBtnEnableBtnSuccessiveTest(self):
-        self.disableAllButton(True)
+    def enableBtnSuccessiveTest(self):
         self.BtnSuccessiveTest.setDisabled(False)
     def enbleALlBtn(self):
         global isNotHaveTh
@@ -781,7 +824,7 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         if self.SensorDetectcomboBox.currentText() == "请选择":
             self.BtnConfig.setDisabled(True)
         if self.canopenIdComboBox.currentText() == "设备":
-             self.SensorDetectcomboBox.setDisabled(True)
+            self.SensorDetectcomboBox.setDisabled(True)
     def popUpReminder(self,str):
         QMessageBox.information(self ,"提醒" , str)
     def refresh(self):
