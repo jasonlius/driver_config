@@ -442,13 +442,16 @@ def testVelocityMode(network):
         deltaMotorNode = network.add_node(NodeID, './ASDA-A3_v04.eds')
         deltaMotorNode.nmt.state = 'OPERATIONAL'
         deltaMotorNode.sdo[0x6060].write(0x03)
-        # stateWords operation to enable servermotor
-        deltaMotorNode.sdo[0x6040].write(0x06)
-        deltaMotorNode.sdo[0x6040].write(0x07)
-        deltaMotorNode.sdo[0x6040].write(0x0F)
-        deltaMotorNode.sdo[0x6083].write(300)
-        deltaMotorNode.sdo[0x6084].write(300)
-        deltaMotorNode.sdo[0x60FF].write(2014)
+        if mainUI.BtnUniformSpeedTest.text() == "启动匀速测试":
+            deltaMotorNode.sdo[0x60FF].write(0)
+        else:
+            # stateWords operation to enable servermotor
+            deltaMotorNode.sdo[0x6040].write(0x06)
+            deltaMotorNode.sdo[0x6040].write(0x07)
+            deltaMotorNode.sdo[0x6040].write(0x0F)
+            deltaMotorNode.sdo[0x6083].write(300)
+            deltaMotorNode.sdo[0x6084].write(300)
+            deltaMotorNode.sdo[0x60FF].write(2014)
     except Exception:
         mainUI.textBrowser.append("<font color=\"#FF0000\">"+"提升机测试失败，请检查以下几点\n"+
                                   "1：驱动器参数是否选择正确，2：驱动器配置完成是否重启，3：canopen连线是否正确")
@@ -769,7 +772,11 @@ class MyWindow(QMainWindow,Ui_MainWindow):
             self.testUniformSpeedTH.started.connect(self.disbleAllBtn)
             self.testUniformSpeedTH.finished.connect(self.SetSpecificAction)
         else:
-            self.sender().setText("启动匀速测试")
+            self.testUniformSpeedTH = testUniformSpeedThread()
+            self.BtnUniformSpeedTest.setText("启动匀速测试")
+            self.testUniformSpeedTH.start()
+            self.testUniformSpeedTH.started.connect(self.disbleAllBtn)
+            self.testUniformSpeedTH.finished.connect(self.SetSpecificAction)
     def SetSpecificAction(self):
         if self.BtnUniformSpeedTest.text() == "关闭匀速测试":
             self.BtnUniformSpeedTest.setDisabled(False)
