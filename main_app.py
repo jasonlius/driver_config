@@ -811,6 +811,11 @@ class MyWindow(QMainWindow,Ui_MainWindow):
         self.configLifterTh.start()
     # ----------------------------------------------------------
 
+    def testSensor(self):
+
+
+
+
     # --------------------------------------------------------
     # 创建一个新线程来读取举升机配置
     def readLifterConfig(self):
